@@ -1,6 +1,6 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-qt_add_executable(styleplugin
+add_executable(styleplugin
     main.cpp
     stylewindow.cpp stylewindow.h
 )
@@ -16,7 +16,7 @@ target_link_libraries(styleplugin PRIVATE
     Qt::Widgets
 )
 
-if(NOT QT6_IS_SHARED_LIBS_BUILD)
+if(NOT QT5_IS_SHARED_LIBS_BUILD)
     target_link_libraries(styleplugin PRIVATE
         simplestyleplugin
     )

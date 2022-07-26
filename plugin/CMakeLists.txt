@@ -1,10 +1,10 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-qt_add_plugin(simplestyleplugin
-    CLASS_NAME SimpleStylePlugin
-)
+#qt_add_plugin(simplestyleplugin
+#    CLASS_NAME SimpleStylePlugin
+#)
 
-target_sources(simplestyleplugin PRIVATE
+add_library(simplestyleplugin MODULE
     simplestyle.cpp simplestyle.h
     simplestyleplugin.cpp simplestyleplugin.h
 )
