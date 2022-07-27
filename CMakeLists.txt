@@ -14,3 +14,4 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/tools/styleplugin")
 
 add_subdirectory(stylewindow)
 add_subdirectory(plugin)
+add_subdirectory(chameleon)

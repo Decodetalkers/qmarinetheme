@@ -1,22 +1,12 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
+** You may use this file under the terms of the BSD license as follows:
 **
 ** "Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions are
@@ -48,17 +38,37 @@
 **
 ****************************************************************************/
 
-#ifndef STYLEWINDOW_H
-#define STYLEWINDOW_H
+#ifndef NORWEGIANWOODSTYLE_H
+#define NORWEGIANWOODSTYLE_H
 
-#include <QWidget>
+#include <QPalette>
+#include <QProxyStyle>
 
-class StyleWindow : public QWidget
+QT_BEGIN_NAMESPACE
+class QPainterPath;
+QT_END_NAMESPACE
+
+//! [0]
+class NorwegianWoodStyle : public QProxyStyle
 {
     Q_OBJECT
 
 public:
-    StyleWindow();
+    NorwegianWoodStyle();
+
+    void polish(QPalette &palette) override;
+    void polish(QWidget *widget) override;
+    void unpolish(QWidget *widget) override;
+    int pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const override;
+    int styleHint(StyleHint hint, const QStyleOption *option, const QWidget *widget, QStyleHintReturn *returnData) const override;
+    void
+    drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+    void drawControl(ControlElement control, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+
+private:
+    static void setTexture(QPalette &palette, QPalette::ColorRole role, const QPixmap &pixmap);
+    static QPainterPath roundRectPath(const QRect &rect);
 };
+//! [0]
 
 #endif

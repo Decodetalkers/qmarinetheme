@@ -1,29 +1,28 @@
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-add_executable(styleplugin
-    main.cpp
-    stylewindow.cpp stylewindow.h
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Dtk REQUIRED COMPONENTS Widget)
+
+add_executable(
+  styleplugin
+  main.cpp 
+  norwegianwoodstyle.h 
+  norwegianwoodstyle.cpp
+  widgetgallery.h
+  widgetgallery.cpp
+  styles.qrc
 )
 
-set_target_properties(styleplugin PROPERTIES
-    WIN32_EXECUTABLE TRUE
-    MACOSX_BUNDLE TRUE
-)
-
-target_link_libraries(styleplugin PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::Widgets
-)
-
-if(NOT QT5_IS_SHARED_LIBS_BUILD)
-    target_link_libraries(styleplugin PRIVATE
-        simplestyleplugin
-    )
-endif()
-
-install(TARGETS styleplugin
-    RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
-    BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
-    LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
+target_link_libraries(
+  styleplugin PRIVATE 
+  Qt5::Widgets 
+  ${DtkWidget_LIBRARIES}
 )
