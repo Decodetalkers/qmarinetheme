@@ -40,6 +40,7 @@ class ChameleonStyle : public DStyle
 public:
     explicit ChameleonStyle();
 
+	// 定義圓角
     void
     drawPrimitive(QStyle::PrimitiveElement pe, const QStyleOption *opt, QPainter *p, const QWidget *w = nullptr) const override;
     void

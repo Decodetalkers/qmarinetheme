@@ -1,7 +1,7 @@
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_AUTORCC ON)
-
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(DtkCMake REQUIRED)
 find_package(DtkGui REQUIRED)
 find_package(DtkCore REQUIRED)
@@ -11,6 +11,19 @@ add_library(chameleonstyleplugin MODULE
   resources.qrc
   chameleonstyle.h
   chameleonstyle.cpp
+  chameleonstyle/chameleontools.hpp
+  chameleonstyle/primitive.cpp
+  chameleonstyle/drawcontrol.cpp
+  chameleonstyle/subelementreact.cpp
+  chameleonstyle/drawcomplexcontrol.cpp
+  chameleonstyle/drawhittestcomplexcontrol.cpp
+  chameleonstyle/subcontrolrect.cpp
+  chameleonstyle/sizefromcontents.cpp
+  chameleonstyle/pixelmetric.cpp
+  chameleonstyle/sizehint.cpp
+  chameleonstyle/polish.cpp
+  chameleonstyle/unpolish.cpp
+  chameleonstyle/generatedbrush.cpp
   common.h 
   dstyleanimation.h
   dstyleanimation.cpp
