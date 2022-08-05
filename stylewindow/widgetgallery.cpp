@@ -64,7 +64,7 @@ WidgetGallery::WidgetGallery(QWidget *parent)
 
     disableWidgetsCheckBox = new QCheckBox(tr("&Disable widgets"));
 
-    changeStyle("chameleon");
+    changeStyle("NorwegianWood");
 
     createTopLeftGroupBox();
     createTopRightGroupBox();
@@ -167,7 +167,7 @@ void WidgetGallery::changePalette()
     if (useStylePaletteCheckBox->isChecked()) {
         QApplication::setPalette(QApplication::style()->standardPalette());
     } else {
-        //        QApplication::setPalette(originalPalette);
+        QApplication::setPalette(originalPalette);
         QApplication::setAttribute(Qt::AA_SetPalette, false);
     }
 }

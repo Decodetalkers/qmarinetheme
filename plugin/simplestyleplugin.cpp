@@ -50,7 +50,6 @@
 
 #include "simplestyleplugin.h"
 #include "simplestyle.h"
-
 //! [0]
 QStringList SimpleStylePlugin::keys() const
 {
