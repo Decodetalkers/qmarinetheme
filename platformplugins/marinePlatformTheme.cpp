@@ -6,6 +6,7 @@
 #include <qpa/qplatformthemefactory_p.h>
 #include <qt/QtWidgets/qstylefactory.h>
 #include <string>
+
 Q_LOGGING_CATEGORY(MarineTheme, "MarineTheme")
 
 constexpr std::string THEMENAME = "marine";

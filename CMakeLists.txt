@@ -9,4 +9,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(stylewindow)
 add_subdirectory(styles)
-add_subdirectory(marin_platformplugin)
+add_subdirectory(platformplugins)
