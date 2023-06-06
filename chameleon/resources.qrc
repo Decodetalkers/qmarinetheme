@@ -1,6 +1,0 @@
-<!DOCTYPE RCC>
-<RCC>
-    <qresource prefix="/chameleon">
-        <file>menu_shadow.svg</file>
-    </qresource>
-</RCC>

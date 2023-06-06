@@ -13,16 +13,14 @@ find_package(Dtk REQUIRED COMPONENTS Widget)
 
 add_executable(
   styleplugin
-  main.cpp 
-  norwegianwoodstyle.h 
+  main.cpp
+  norwegianwoodstyle.h
   norwegianwoodstyle.cpp
   widgetgallery.h
   widgetgallery.cpp
-  styles.qrc
-)
+  styles.qrc)
 
 target_link_libraries(
-  styleplugin PRIVATE 
-  Qt5::Widgets 
-  ${DtkWidget_LIBRARIES}
-)
+  styleplugin PRIVATE
+  Qt5::Widgets
+  ${DtkWidget_LIBRARIES})

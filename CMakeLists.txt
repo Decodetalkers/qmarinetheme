@@ -6,12 +6,5 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_AUTOMOC ON)
 
-if(NOT DEFINED INSTALL_EXAMPLESDIR)
-    set(INSTALL_EXAMPLESDIR "examples")
-endif()
-
-set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/tools/styleplugin")
-
 add_subdirectory(stylewindow)
-add_subdirectory(plugin)
-add_subdirectory(chameleon)
+add_subdirectory(styles)
