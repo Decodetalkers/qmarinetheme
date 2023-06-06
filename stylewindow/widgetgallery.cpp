@@ -35,15 +35,15 @@ WidgetGallery::WidgetGallery(QWidget *parent)
 
     //! [1]
     connect(styleComboBox,
-            SIGNAL(activated(QString)),
+            &QComboBox::currentTextChanged,
             //! [1] //! [2]
             this,
-            SLOT(changeStyle(QString)));
-    connect(useStylePaletteCheckBox, SIGNAL(toggled(bool)), this, SLOT(changePalette()));
-    connect(disableWidgetsCheckBox, SIGNAL(toggled(bool)), topLeftGroupBox, SLOT(setDisabled(bool)));
-    connect(disableWidgetsCheckBox, SIGNAL(toggled(bool)), topRightGroupBox, SLOT(setDisabled(bool)));
-    connect(disableWidgetsCheckBox, SIGNAL(toggled(bool)), bottomLeftTabWidget, SLOT(setDisabled(bool)));
-    connect(disableWidgetsCheckBox, SIGNAL(toggled(bool)), bottomRightGroupBox, SLOT(setDisabled(bool)));
+            &WidgetGallery::changeStyle);
+    connect(useStylePaletteCheckBox, &QCheckBox::toggled, this, &WidgetGallery::changePalette);
+    connect(disableWidgetsCheckBox, &QCheckBox::toggled, topLeftGroupBox, &QCheckBox::setDisabled);
+    connect(disableWidgetsCheckBox, &QCheckBox::toggled, topRightGroupBox, &QCheckBox::setDisabled);
+    connect(disableWidgetsCheckBox, &QCheckBox::toggled, bottomLeftTabWidget, &QCheckBox::setDisabled);
+    connect(disableWidgetsCheckBox, &QCheckBox::toggled, bottomRightGroupBox, &QCheckBox::setDisabled);
     //! [2]
 
     //! [3]
@@ -215,7 +215,7 @@ void WidgetGallery::createBottomLeftTabWidget()
     tableWidget->setAlternatingRowColors(true);
 
     QHBoxLayout *tab1hbox = new QHBoxLayout;
-    tab1hbox->setMargin(5);
+    // tab1hbox->setMargin(5);
     tab1hbox->addWidget(tableWidget);
     tab1->setLayout(tab1hbox);
 
@@ -230,7 +230,7 @@ void WidgetGallery::createBottomLeftTabWidget()
                               "How I wonder what you are!\n"));
 
     QHBoxLayout *tab2hbox = new QHBoxLayout;
-    tab2hbox->setMargin(5);
+    // tab2hbox->setMargin(5);
     tab2hbox->addWidget(textEdit);
     tab2->setLayout(tab2hbox);
 
@@ -241,8 +241,8 @@ void WidgetGallery::createBottomLeftTabWidget()
     QFileSystemModel *model = new QFileSystemModel(this);
     model->setRootPath(QDir::currentPath());
     QHBoxLayout *pTabLayout = new QHBoxLayout;
-    pTabLayout->setMargin(0);
-    pTabLayout->setMargin(0);
+    // pTabLayout->setMargin(0);
+    // pTabLayout->setMargin(0);
     pTreeViewWidget->setLayout(pTabLayout);
 
     QTreeView *tree = new QTreeView;
@@ -252,7 +252,7 @@ void WidgetGallery::createBottomLeftTabWidget()
     QWidget *pListViewWidget = new QWidget;
     QHBoxLayout *pListLayout = new QHBoxLayout;
     QStandardItemModel *listModel = new QStandardItemModel(this);
-    pListLayout->setMargin(0);
+    // pListLayout->setMargin(0);
     pListViewWidget->setLayout(pListLayout);
 
     QListView *lv = new QListView;

@@ -8,9 +8,6 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Dtk REQUIRED COMPONENTS Widget)
-
 add_executable(
   styleplugin
   main.cpp
@@ -22,5 +19,5 @@ add_executable(
 
 target_link_libraries(
   styleplugin PRIVATE
-  Qt5::Widgets
-  ${DtkWidget_LIBRARIES})
+  Qt::Widgets
+)
