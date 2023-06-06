@@ -9,22 +9,22 @@
 WidgetGallery::WidgetGallery(QWidget *parent)
     : QMainWindow(parent)
 {
-    originalPalette = QApplication::palette();
+    m_originalPalette = QApplication::palette();
 
-    styleComboBox = new QComboBox;
-    styleComboBox->addItem("NorwegianWood");
-    styleComboBox->addItems(QStyleFactory::keys());
-    styleComboBox->setToolTip("Hello");
+    m_styleComboBox = new QComboBox;
+    m_styleComboBox->addItem("NorwegianWood");
+    m_styleComboBox->addItems(QStyleFactory::keys());
+    m_styleComboBox->setToolTip("Hello");
 
-    styleLabel = new QLabel(tr("&Style:"));
-    styleLabel->setBuddy(styleComboBox);
+    m_styleLabel = new QLabel(tr("&Style:"));
+    m_styleLabel->setBuddy(m_styleComboBox);
 
-    useStylePaletteCheckBox = new QCheckBox(tr("&Use style's standard palette"));
-    useStylePaletteCheckBox->setChecked(false);
+    m_useStylePaletteCheckBox = new QCheckBox(tr("&Use style's standard palette"));
+    m_useStylePaletteCheckBox->setChecked(false);
 
-    disableWidgetsCheckBox = new QCheckBox(tr("&Disable widgets"));
+    m_disableWidgetsCheckBox = new QCheckBox(tr("&Disable widgets"));
 
-    changeStyle("NorwegianWood");
+    // changeStyle("NorwegianWood");
 
     createTopLeftGroupBox();
     createTopRightGroupBox();
@@ -34,35 +34,31 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     //! [0]
 
     //! [1]
-    connect(styleComboBox,
-            &QComboBox::currentTextChanged,
-            //! [1] //! [2]
-            this,
-            &WidgetGallery::changeStyle);
-    connect(useStylePaletteCheckBox, &QCheckBox::toggled, this, &WidgetGallery::changePalette);
-    connect(disableWidgetsCheckBox, &QCheckBox::toggled, topLeftGroupBox, &QCheckBox::setDisabled);
-    connect(disableWidgetsCheckBox, &QCheckBox::toggled, topRightGroupBox, &QCheckBox::setDisabled);
-    connect(disableWidgetsCheckBox, &QCheckBox::toggled, bottomLeftTabWidget, &QCheckBox::setDisabled);
-    connect(disableWidgetsCheckBox, &QCheckBox::toggled, bottomRightGroupBox, &QCheckBox::setDisabled);
+    connect(m_styleComboBox, &QComboBox::currentTextChanged, this, &WidgetGallery::changeStyle);
+    connect(m_useStylePaletteCheckBox, &QCheckBox::toggled, this, &WidgetGallery::changePalette);
+    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topLeftGroupBox, &QCheckBox::setDisabled);
+    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topRightGroupBox, &QCheckBox::setDisabled);
+    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_bottomLeftTabWidget, &QCheckBox::setDisabled);
+    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_bottomRightGroupBox, &QCheckBox::setDisabled);
     //! [2]
 
     //! [3]
     QWidget *mainWidget = new QWidget();
     QHBoxLayout *topLayout = new QHBoxLayout;
     //! [3] //! [4]
-    topLayout->addWidget(styleLabel);
-    topLayout->addWidget(styleComboBox);
+    topLayout->addWidget(m_styleLabel);
+    topLayout->addWidget(m_styleComboBox);
     topLayout->addStretch(1);
-    topLayout->addWidget(useStylePaletteCheckBox);
-    topLayout->addWidget(disableWidgetsCheckBox);
+    topLayout->addWidget(m_useStylePaletteCheckBox);
+    topLayout->addWidget(m_disableWidgetsCheckBox);
 
     QGridLayout *mainLayout = new QGridLayout(mainWidget);
     mainLayout->addLayout(topLayout, 0, 0, 1, 2);
-    mainLayout->addWidget(topLeftGroupBox, 1, 0);
-    mainLayout->addWidget(topRightGroupBox, 1, 1);
-    mainLayout->addWidget(bottomLeftTabWidget, 2, 0);
-    mainLayout->addWidget(bottomRightGroupBox, 2, 1);
-    mainLayout->addWidget(progressBar, 3, 0, 1, 2);
+    mainLayout->addWidget(m_topLeftGroupBox, 1, 0);
+    mainLayout->addWidget(m_topRightGroupBox, 1, 1);
+    mainLayout->addWidget(m_bottomLeftTabWidget, 2, 0);
+    mainLayout->addWidget(m_bottomRightGroupBox, 2, 1);
+    mainLayout->addWidget(m_progressBar, 3, 0, 1, 2);
     mainLayout->setRowStretch(1, 1);
     mainLayout->setRowStretch(2, 1);
     mainLayout->setColumnStretch(0, 1);
@@ -124,10 +120,10 @@ void WidgetGallery::changeStyle(const QString &styleName)
 void WidgetGallery::changePalette()
 //! [7] //! [8]
 {
-    if (useStylePaletteCheckBox->isChecked()) {
+    if (m_useStylePaletteCheckBox->isChecked()) {
         QApplication::setPalette(QApplication::style()->standardPalette());
     } else {
-        QApplication::setPalette(originalPalette);
+        QApplication::setPalette(m_originalPalette);
         QApplication::setAttribute(Qt::AA_SetPalette, false);
     }
 }
@@ -137,9 +133,9 @@ void WidgetGallery::changePalette()
 void WidgetGallery::advanceProgressBar()
 //! [9] //! [10]
 {
-    int curVal = progressBar->value();
-    int maxVal = progressBar->maximum();
-    progressBar->setValue(curVal + (maxVal - curVal) / 100);
+    int curVal = m_progressBar->value();
+    int maxVal = m_progressBar->maximum();
+    m_progressBar->setValue(curVal + (maxVal - curVal) / 100);
 }
 //! [10]
 
@@ -147,95 +143,102 @@ void WidgetGallery::advanceProgressBar()
 void WidgetGallery::createTopLeftGroupBox()
 //! [11] //! [12]
 {
-    topLeftGroupBox = new QGroupBox(tr("Group 1"));
+    m_topLeftGroupBox = new QGroupBox(tr("Group 1"));
 
-    radioButton1 = new QRadioButton(tr("Radio button 1"));
-    radioButton2 = new QRadioButton(tr("Radio button 2"));
-    radioButton3 = new QRadioButton(tr("Radio button 3"));
-    radioButton1->setChecked(true);
+    m_radioButton1 = new QRadioButton(tr("Radio button 1"));
+    m_radioButton2 = new QRadioButton(tr("Radio button 2"));
+    m_radioButton3 = new QRadioButton(tr("Radio button 3"));
+    m_radioButton1->setChecked(true);
 
-    checkBox = new QCheckBox(tr("Tri-state check box"));
-    checkBox->setTristate(true);
-    checkBox->setCheckState(Qt::PartiallyChecked);
+    m_checkBox = new QCheckBox(tr("Tri-state check box"));
+    m_checkBox->setTristate(true);
+    m_checkBox->setCheckState(Qt::PartiallyChecked);
 
-    connect(radioButton1, &QRadioButton::clicked, this, [&] {
-        bottomLeftTabWidget->setDocumentMode(!bottomLeftTabWidget->documentMode());
+    connect(m_radioButton1, &QRadioButton::clicked, this, [this] {
+        m_bottomLeftTabWidget->setDocumentMode(!m_bottomLeftTabWidget->documentMode());
     });
-    connect(radioButton2, &QRadioButton::clicked, this, [&] {
-        bottomLeftTabWidget->setTabShape(QTabWidget::Rounded);
-        bottomLeftTabWidget->update();
+    connect(m_radioButton2, &QRadioButton::clicked, this, [this] {
+        m_bottomLeftTabWidget->setTabShape(QTabWidget::Rounded);
+        m_bottomLeftTabWidget->update();
     });
-    connect(radioButton3, &QRadioButton::clicked, this, [&] {
-        bottomLeftTabWidget->setTabShape(QTabWidget::Triangular);
-        bottomLeftTabWidget->update();
+    connect(m_radioButton3, &QRadioButton::clicked, this, [this] {
+        m_bottomLeftTabWidget->setTabShape(QTabWidget::Triangular);
+        m_bottomLeftTabWidget->update();
     });
 
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(radioButton1);
-    layout->addWidget(radioButton2);
-    layout->addWidget(radioButton3);
-    layout->addWidget(checkBox);
+    layout->addWidget(m_radioButton1);
+    layout->addWidget(m_radioButton2);
+    layout->addWidget(m_radioButton3);
+    layout->addWidget(m_checkBox);
     layout->addStretch(1);
-    topLeftGroupBox->setLayout(layout);
+    m_topLeftGroupBox->setLayout(layout);
 }
 //! [12]
 
 void WidgetGallery::createTopRightGroupBox()
 {
-    topRightGroupBox = new QGroupBox(tr("Group 2"));
+    m_topRightGroupBox = new QGroupBox(tr("Group 2"));
 
-    defaultPushButton = new QPushButton(tr("Default Push Button"));
-    defaultPushButton->setDefault(true);
+    m_defaultPushButton = new QPushButton(tr("Default Push Button"));
+    m_defaultPushButton->setDefault(true);
 
-    togglePushButton = new QPushButton(tr("Toggle Push Button"));
-    togglePushButton->setCheckable(true);
-    togglePushButton->setChecked(true);
+    m_togglePushButton = new QPushButton(tr("Toggle Push Button"));
+    m_togglePushButton->setCheckable(true);
+    m_togglePushButton->setChecked(true);
 
-    flatPushButton = new QPushButton(tr("Flat Push Button"));
-    flatPushButton->setFlat(true);
+    m_flatPushButton = new QPushButton(tr("Flat Push Button"));
+    m_flatPushButton->setFlat(true);
+
+    m_xdgDialogPushButton = new QPushButton(tr("Clicked it to open Dialog"));
+    connect(m_xdgDialogPushButton, &QPushButton::clicked, this, [=] {
+        QFileDialog dialog;
+        dialog.exec();
+    });
 
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(defaultPushButton);
-    layout->addWidget(togglePushButton);
-    layout->addWidget(flatPushButton);
+    layout->addWidget(m_defaultPushButton);
+    layout->addWidget(m_togglePushButton);
+    layout->addWidget(m_flatPushButton);
+    layout->addWidget(m_xdgDialogPushButton);
     layout->addStretch(1);
-    topRightGroupBox->setLayout(layout);
+    m_topRightGroupBox->setLayout(layout);
 }
 
 void WidgetGallery::createBottomLeftTabWidget()
 {
-    bottomLeftTabWidget = new QTabWidget;
-    bottomLeftTabWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
+    m_bottomLeftTabWidget = new QTabWidget;
+    m_bottomLeftTabWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
 
-    bottomLeftTabWidget->setTabsClosable(true);
-    bottomLeftTabWidget->setTabShape(QTabWidget::Triangular);
+    m_bottomLeftTabWidget->setTabsClosable(true);
+    m_bottomLeftTabWidget->setTabShape(QTabWidget::Triangular);
 
     QWidget *tab1 = new QWidget;
-    tableWidget = new QTableWidget(10, 10);
-    tableWidget->setAlternatingRowColors(true);
+    m_tableWidget = new QTableWidget(10, 10);
+    m_tableWidget->setAlternatingRowColors(true);
 
     QHBoxLayout *tab1hbox = new QHBoxLayout;
     // tab1hbox->setMargin(5);
-    tab1hbox->addWidget(tableWidget);
+    tab1hbox->addWidget(m_tableWidget);
     tab1->setLayout(tab1hbox);
 
     QWidget *tab2 = new QWidget;
-    textEdit = new QTextEdit;
+    m_textEdit = new QTextEdit;
 
-    textEdit->setPlainText(tr("Twinkle, twinkle, little star,\n"
-                              "How I wonder what you are.\n"
-                              "Up above the world so high,\n"
-                              "Like a diamond in the sky.\n"
-                              "Twinkle, twinkle, little star,\n"
-                              "How I wonder what you are!\n"));
+    m_textEdit->setPlainText(tr("Twinkle, twinkle, little star,\n"
+                                "How I wonder what you are.\n"
+                                "Up above the world so high,\n"
+                                "Like a diamond in the sky.\n"
+                                "Twinkle, twinkle, little star,\n"
+                                "How I wonder what you are!\n"));
 
     QHBoxLayout *tab2hbox = new QHBoxLayout;
     // tab2hbox->setMargin(5);
-    tab2hbox->addWidget(textEdit);
+    tab2hbox->addWidget(m_textEdit);
     tab2->setLayout(tab2hbox);
 
-    bottomLeftTabWidget->addTab(tab1, tr("&Table"));
-    bottomLeftTabWidget->addTab(tab2, tr("Text &Edit"));
+    m_bottomLeftTabWidget->addTab(tab1, tr("&Table"));
+    m_bottomLeftTabWidget->addTab(tab2, tr("Text &Edit"));
 
     QWidget *pTreeViewWidget = new QWidget;
     QFileSystemModel *model = new QFileSystemModel(this);
@@ -279,25 +282,25 @@ void WidgetGallery::createBottomLeftTabWidget()
     tbVLayout->addWidget(createToolButtons(nullptr, true));
     QScrollArea *toolArea = new QScrollArea;
     toolArea->setWidget(toolbtns);
-    bottomLeftTabWidget->addTab(pTreeViewWidget, "&TreeView");
-    bottomLeftTabWidget->addTab(pListViewWidget, "&ListView");
-    bottomLeftTabWidget->addTab(toolArea, "toolbuttons");
-    bottomLeftTabWidget->addTab(new QWidget(), "tab 3");
-    bottomLeftTabWidget->addTab(new QWidget(), "tab 4");
+    m_bottomLeftTabWidget->addTab(pTreeViewWidget, "&TreeView");
+    m_bottomLeftTabWidget->addTab(pListViewWidget, "&ListView");
+    m_bottomLeftTabWidget->addTab(toolArea, "toolbuttons");
+    m_bottomLeftTabWidget->addTab(new QWidget(), "tab 3");
+    m_bottomLeftTabWidget->addTab(new QWidget(), "tab 4");
 }
 
 void WidgetGallery::createBottomRightGroupBox()
 {
-    bottomRightGroupBox = new QGroupBox(tr("Group 3"));
-    bottomRightGroupBox->setCheckable(true);
-    bottomRightGroupBox->setChecked(true);
+    m_bottomRightGroupBox = new QGroupBox(tr("Group 3"));
+    m_bottomRightGroupBox->setCheckable(true);
+    m_bottomRightGroupBox->setChecked(true);
 
-    lineEdit = new QLineEdit("s3cRe7");
-    lineEdit->setEchoMode(QLineEdit::Password);
-    lineEdit->setClearButtonEnabled(true);
-    lineEdit->setFrame(false);
-    QMenu *menu = lineEdit->createStandardContextMenu();
-    menu->setParent(lineEdit);
+    m_lineEdit = new QLineEdit("s3cRe7");
+    m_lineEdit->setEchoMode(QLineEdit::Password);
+    m_lineEdit->setClearButtonEnabled(true);
+    m_lineEdit->setFrame(false);
+    QMenu *menu = m_lineEdit->createStandardContextMenu();
+    menu->setParent(m_lineEdit);
     QAction *testActoin = new QAction("b");
     testActoin->setCheckable(true);
     testActoin->setProperty("_d_menu_item_redpoint", true);
@@ -316,60 +319,60 @@ void WidgetGallery::createBottomRightGroupBox()
         testActoin->setProperty("_d_menu_item_redpoint", checked);
     });
     menu->addAction(testActoin);
-    QObject::connect(lineEdit, &QLineEdit::textChanged, lineEdit, [menu]() { menu->popup(QCursor::pos()); });
+    QObject::connect(m_lineEdit, &QLineEdit::textChanged, m_lineEdit, [menu]() { menu->popup(QCursor::pos()); });
 
-    spinBox = new QSpinBox(bottomRightGroupBox);
-    spinBox->setValue(50);
-    spinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
-    spinBox->setPrefix(" Prefix ");
-    spinBox->setSuffix(" Suffix ");
-    spinBox->setAlignment(Qt::AlignCenter);
-    spinBox->setFrame(false);
+    m_spinBox = new QSpinBox(m_bottomRightGroupBox);
+    m_spinBox->setValue(50);
+    m_spinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+    m_spinBox->setPrefix(" Prefix ");
+    m_spinBox->setSuffix(" Suffix ");
+    m_spinBox->setAlignment(Qt::AlignCenter);
+    m_spinBox->setFrame(false);
 
-    dateTimeEdit = new QDateTimeEdit(bottomRightGroupBox);
-    dateTimeEdit->setDateTime(QDateTime::currentDateTime());
+    m_dateTimeEdit = new QDateTimeEdit(m_bottomRightGroupBox);
+    m_dateTimeEdit->setDateTime(QDateTime::currentDateTime());
 
-    comboBoxEdit = new QComboBox(bottomRightGroupBox);
-    comboBoxEdit->addItem(QIcon::fromTheme("dde-file-manager"), "dde-file-manager");
-    comboBoxEdit->addItem(QIcon::fromTheme("dde-introduction"), "dde-introduction");
-    comboBoxEdit->addItem(QIcon::fromTheme("deepin-deb-installer"), "deepin-deb-installer");
-    comboBoxEdit->setEditable(true);
+    m_comboBoxEdit = new QComboBox(m_bottomRightGroupBox);
+    m_comboBoxEdit->addItem(QIcon::fromTheme("dde-file-manager"), "dde-file-manager");
+    m_comboBoxEdit->addItem(QIcon::fromTheme("dde-introduction"), "dde-introduction");
+    m_comboBoxEdit->addItem(QIcon::fromTheme("deepin-deb-installer"), "deepin-deb-installer");
+    m_comboBoxEdit->setEditable(true);
 
-    slider = new QSlider(Qt::Horizontal, bottomRightGroupBox);
-    slider->setRange(0, 100);
-    slider->setTickInterval(10);
-    slider->setTickPosition(QSlider::TicksBelow);
-    slider->setValue(40);
+    m_slider = new QSlider(Qt::Horizontal, m_bottomRightGroupBox);
+    m_slider->setRange(0, 100);
+    m_slider->setTickInterval(10);
+    m_slider->setTickPosition(QSlider::TicksBelow);
+    m_slider->setValue(40);
 
-    scrollBar = new QScrollBar(Qt::Horizontal, bottomRightGroupBox);
-    scrollBar->setValue(60);
-    scrollBar->setProperty("_d_dtk_slider_always_show", true);
+    m_scrollBar = new QScrollBar(Qt::Horizontal, m_bottomRightGroupBox);
+    m_scrollBar->setValue(60);
+    m_scrollBar->setProperty("_d_dtk_slider_always_show", true);
 
-    dial = new QDial(bottomRightGroupBox);
-    dial->setValue(30);
-    dial->setNotchesVisible(true);
+    m_dial = new QDial(m_bottomRightGroupBox);
+    m_dial->setValue(30);
+    m_dial->setNotchesVisible(true);
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(lineEdit, 0, 0, 1, 2);
-    layout->addWidget(spinBox, 1, 0, 1, 2);
-    layout->addWidget(dateTimeEdit, 2, 0, 1, 2);
-    layout->addWidget(comboBoxEdit, 3, 0, 1, 2);
-    layout->addWidget(slider, 4, 0);
-    layout->addWidget(scrollBar, 5, 0);
-    layout->addWidget(dial, 4, 1, 2, 1);
+    layout->addWidget(m_lineEdit, 0, 0, 1, 2);
+    layout->addWidget(m_spinBox, 1, 0, 1, 2);
+    layout->addWidget(m_dateTimeEdit, 2, 0, 1, 2);
+    layout->addWidget(m_comboBoxEdit, 3, 0, 1, 2);
+    layout->addWidget(m_slider, 4, 0);
+    layout->addWidget(m_scrollBar, 5, 0);
+    layout->addWidget(m_dial, 4, 1, 2, 1);
     layout->setRowStretch(6, 1);
-    bottomRightGroupBox->setLayout(layout);
+    m_bottomRightGroupBox->setLayout(layout);
 }
 
 //! [13]
 void WidgetGallery::createProgressBar()
 {
-    progressBar = new QProgressBar;
-    progressBar->setRange(0, 10000);
-    progressBar->setValue(0);
+    m_progressBar = new QProgressBar;
+    m_progressBar->setRange(0, 10000);
+    m_progressBar->setValue(0);
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(advanceProgressBar()));
+    connect(timer, &QTimer::timeout, this, &WidgetGallery::advanceProgressBar);
     timer->start(1000);
 }
 //! [13]

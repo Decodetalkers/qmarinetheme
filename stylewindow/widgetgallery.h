@@ -89,39 +89,40 @@ private:
                          Qt::ToolButtonStyle style = Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
     QWidget *createToolButtons(QWidget *parent = nullptr, bool hasMenu = true);
 
-    QPalette originalPalette;
+    QPalette m_originalPalette;
 
-    QLabel *styleLabel;
-    QComboBox *styleComboBox;
-    QCheckBox *useStylePaletteCheckBox;
-    QCheckBox *disableWidgetsCheckBox;
+    QLabel *m_styleLabel;
+    QComboBox *m_styleComboBox;
+    QCheckBox *m_useStylePaletteCheckBox;
+    QCheckBox *m_disableWidgetsCheckBox;
     //! [0]
 
-    QGroupBox *topLeftGroupBox;
-    QRadioButton *radioButton1;
-    QRadioButton *radioButton2;
-    QRadioButton *radioButton3;
-    QCheckBox *checkBox;
+    QGroupBox *m_topLeftGroupBox;
+    QRadioButton *m_radioButton1;
+    QRadioButton *m_radioButton2;
+    QRadioButton *m_radioButton3;
+    QCheckBox *m_checkBox;
 
-    QGroupBox *topRightGroupBox;
-    QPushButton *defaultPushButton;
-    QPushButton *togglePushButton;
-    QPushButton *flatPushButton;
+    QGroupBox *m_topRightGroupBox;
+    QPushButton *m_defaultPushButton;
+    QPushButton *m_togglePushButton;
+    QPushButton *m_flatPushButton;
+    QPushButton *m_xdgDialogPushButton;
 
-    QTabWidget *bottomLeftTabWidget;
-    QTableWidget *tableWidget;
-    QTextEdit *textEdit;
+    QTabWidget *m_bottomLeftTabWidget;
+    QTableWidget *m_tableWidget;
+    QTextEdit *m_textEdit;
 
-    QGroupBox *bottomRightGroupBox;
-    QLineEdit *lineEdit;
-    QSpinBox *spinBox;
-    QDateTimeEdit *dateTimeEdit;
-    QComboBox *comboBoxEdit;
-    QSlider *slider;
-    QScrollBar *scrollBar;
-    QDial *dial;
+    QGroupBox *m_bottomRightGroupBox;
+    QLineEdit *m_lineEdit;
+    QSpinBox *m_spinBox;
+    QDateTimeEdit *m_dateTimeEdit;
+    QComboBox *m_comboBoxEdit;
+    QSlider *m_slider;
+    QScrollBar *m_scrollBar;
+    QDial *m_dial;
 
-    QProgressBar *progressBar;
+    QProgressBar *m_progressBar;
     //! [1]
 };
 //! [1]
