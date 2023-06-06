@@ -1,4 +1,4 @@
-
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 add_library(simplestyleplugin SHARED
   simplestyle.cpp simplestyle.h
