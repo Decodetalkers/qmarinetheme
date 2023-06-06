@@ -28,7 +28,7 @@ const std::optional<QVariant> XCURSOR_SIZE = std::invoke([]() -> std::optional<Q
 MarinePlatformTheme::MarinePlatformTheme()
   : m_theme(QPlatformThemeFactory::create("xdgdesktopportal"))
 {
-    //qDebug() << QStyleFactory::keys();
+    // qDebug() << QStyleFactory::keys();
 }
 
 bool
