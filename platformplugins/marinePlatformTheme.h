@@ -19,5 +19,9 @@ public:
     virtual QVariant themeHint(ThemeHint hint) const override;
 
 private:
+    void readSettings();
+private:
     QPlatformTheme *m_filechoosertheme;
+    QStringList m_stylename;
+    QString m_iconTheme;
 };
