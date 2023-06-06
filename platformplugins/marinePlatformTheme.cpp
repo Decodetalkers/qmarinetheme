@@ -3,18 +3,32 @@
 #include <QLoggingCategory>
 
 #include <QVariant>
+#include <functional>
+#include <optional>
 #include <qpa/qplatformthemefactory_p.h>
 #include <qt/QtWidgets/qstylefactory.h>
 #include <string>
 
 Q_LOGGING_CATEGORY(MarineTheme, "MarineTheme")
 
-constexpr std::string THEMENAME = "marine";
+const std::optional<QVariant> XCURSOR_THEME = std::invoke([]() -> std::optional<QString> {
+    if (qEnvironmentVariableIsSet("XCURSOR_THEME")) {
+        return qEnvironmentVariable("XCURSOR_THEME");
+    }
+    return std::nullopt;
+});
+
+const std::optional<QVariant> XCURSOR_SIZE = std::invoke([]() -> std::optional<QString> {
+    if (qEnvironmentVariableIsSet("XCURSOR_SIZE")) {
+        return qEnvironmentVariable("XCURSOR_SIZE");
+    }
+    return std::nullopt;
+});
 
 MarinePlatformTheme::MarinePlatformTheme()
   : m_theme(QPlatformThemeFactory::create("xdgdesktopportal"))
 {
-    qDebug() << QStyleFactory::keys();
+    //qDebug() << QStyleFactory::keys();
 }
 
 bool
@@ -36,6 +50,10 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
     case QPlatformTheme::StyleNames:
         return QStringList() << "adwaita";
         break;
+    case QPlatformTheme::MouseCursorTheme:
+        return XCURSOR_THEME.value_or(QPlatformTheme::themeHint(hint));
+    case QPlatformTheme::MouseCursorSize:
+        return XCURSOR_SIZE.value_or(QPlatformTheme::themeHint(hint));
     default:
         return QPlatformTheme::themeHint(hint);
         break;

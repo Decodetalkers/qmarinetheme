@@ -2,7 +2,7 @@ set(LIB_NAME marinePlatformTheme)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-add_library(${LIB_NAME} SHARED
+add_library(${LIB_NAME} MODULE
   marinePlatformTheme.h marinePlatformTheme.cpp
   marineThemePlugin.h marineThemePlugin.cpp
 )
