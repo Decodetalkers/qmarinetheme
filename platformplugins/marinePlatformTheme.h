@@ -19,5 +19,5 @@ public:
     virtual QVariant themeHint(ThemeHint hint) const override;
 
 private:
-    QPlatformTheme *m_theme;
+    QPlatformTheme *m_filechoosertheme;
 };
