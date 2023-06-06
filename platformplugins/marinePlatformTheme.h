@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QObject>
 #include <qpa/qplatformtheme.h>
 
 class MarinePlatformTheme
@@ -20,6 +21,7 @@ public:
 
 private:
     void readSettings();
+
 private:
     QPlatformTheme *m_filechoosertheme;
     QStringList m_stylename;

@@ -2,28 +2,31 @@
 
 #include <QLoggingCategory>
 
+#include <QStyleFactory>
+#include <qpa/qplatformthemefactory_p.h>
+
 #include <QFile>
+#include <QStandardPaths>
 #include <QVariant>
+
+#include <toml++/toml.h>
+
 #include <format>
 #include <functional>
 #include <optional>
-#include <qpa/qplatformthemefactory_p.h>
-#include <qstandardpaths.h>
-#include <qt/QtWidgets/qstylefactory.h>
 #include <string>
-#include <toml++/toml.h>
 
 using namespace std::string_view_literals;
 
 constexpr auto TOML_EXAMPLE = R"(
-    theme = "hello world"
+    theme = "adwaita"
     dialogtype = "xdgdesktopportal"
     iconstyle = "breeze"
 )"sv;
 
 Q_LOGGING_CATEGORY(MarineTheme, "MarineTheme")
 
-constexpr std::string CONFIGDIR = "marinetheme5";
+constexpr std::string CONFIGDIR = "marinetheme6";
 
 constexpr std::string SAVECONFIG = "setting.toml";
 
