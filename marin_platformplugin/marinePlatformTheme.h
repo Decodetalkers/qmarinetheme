@@ -2,7 +2,9 @@
 
 #include <qpa/qplatformtheme.h>
 
-class MarinePlatformTheme : public QObject, public QPlatformTheme
+class MarinePlatformTheme
+  : public QObject
+  , public QPlatformTheme
 {
     Q_OBJECT
 public:

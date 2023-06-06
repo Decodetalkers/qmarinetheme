@@ -7,13 +7,21 @@
 
 //! [0]
 WidgetGallery::WidgetGallery(QWidget *parent)
-    : QMainWindow(parent)
+  : QMainWindow(parent)
 {
     m_originalPalette = QApplication::palette();
 
     m_styleComboBox = new QComboBox;
     m_styleComboBox->addItem("NorwegianWood");
     m_styleComboBox->addItems(QStyleFactory::keys());
+    auto keys = QStyleFactory::keys();
+    int i = 1;
+    for (; i < keys.length(); i++) {
+        if (keys[i-1].toLower() == qApp->style()->name()) {
+            break;
+        }
+    }
+    m_styleComboBox->setCurrentIndex(i);
     m_styleComboBox->setToolTip("Hello");
 
     m_styleLabel = new QLabel(tr("&Style:"));
@@ -36,14 +44,22 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     //! [1]
     connect(m_styleComboBox, &QComboBox::currentTextChanged, this, &WidgetGallery::changeStyle);
     connect(m_useStylePaletteCheckBox, &QCheckBox::toggled, this, &WidgetGallery::changePalette);
-    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topLeftGroupBox, &QCheckBox::setDisabled);
-    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topRightGroupBox, &QCheckBox::setDisabled);
-    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_bottomLeftTabWidget, &QCheckBox::setDisabled);
-    connect(m_disableWidgetsCheckBox, &QCheckBox::toggled, m_bottomRightGroupBox, &QCheckBox::setDisabled);
+    connect(
+      m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topLeftGroupBox, &QCheckBox::setDisabled);
+    connect(
+      m_disableWidgetsCheckBox, &QCheckBox::toggled, m_topRightGroupBox, &QCheckBox::setDisabled);
+    connect(m_disableWidgetsCheckBox,
+            &QCheckBox::toggled,
+            m_bottomLeftTabWidget,
+            &QCheckBox::setDisabled);
+    connect(m_disableWidgetsCheckBox,
+            &QCheckBox::toggled,
+            m_bottomRightGroupBox,
+            &QCheckBox::setDisabled);
     //! [2]
 
     //! [3]
-    QWidget *mainWidget = new QWidget();
+    QWidget *mainWidget    = new QWidget();
     QHBoxLayout *topLayout = new QHBoxLayout;
     //! [3] //! [4]
     topLayout->addWidget(m_styleLabel);
@@ -99,12 +115,15 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     menuBar()->addAction("dsemidark");
     menuBar()->addAction("dsemilight");
 
-    connect(menuBar(), &QMenuBar::triggered, this, [this](const QAction *action) { changeStyle(action->text()); });
+    connect(menuBar(), &QMenuBar::triggered, this, [this](const QAction *action) {
+        changeStyle(action->text());
+    });
 }
 //! [4]
 
 //! [5]
-void WidgetGallery::changeStyle(const QString &styleName)
+void
+WidgetGallery::changeStyle(const QString &styleName)
 //! [5] //! [6]
 {
     if (styleName == "NorwegianWood") {
@@ -117,7 +136,8 @@ void WidgetGallery::changeStyle(const QString &styleName)
 //! [6]
 
 //! [7]
-void WidgetGallery::changePalette()
+void
+WidgetGallery::changePalette()
 //! [7] //! [8]
 {
     if (m_useStylePaletteCheckBox->isChecked()) {
@@ -130,7 +150,8 @@ void WidgetGallery::changePalette()
 //! [8]
 
 //! [9]
-void WidgetGallery::advanceProgressBar()
+void
+WidgetGallery::advanceProgressBar()
 //! [9] //! [10]
 {
     int curVal = m_progressBar->value();
@@ -140,7 +161,8 @@ void WidgetGallery::advanceProgressBar()
 //! [10]
 
 //! [11]
-void WidgetGallery::createTopLeftGroupBox()
+void
+WidgetGallery::createTopLeftGroupBox()
 //! [11] //! [12]
 {
     m_topLeftGroupBox = new QGroupBox(tr("Group 1"));
@@ -176,7 +198,8 @@ void WidgetGallery::createTopLeftGroupBox()
 }
 //! [12]
 
-void WidgetGallery::createTopRightGroupBox()
+void
+WidgetGallery::createTopRightGroupBox()
 {
     m_topRightGroupBox = new QGroupBox(tr("Group 2"));
 
@@ -205,7 +228,8 @@ void WidgetGallery::createTopRightGroupBox()
     m_topRightGroupBox->setLayout(layout);
 }
 
-void WidgetGallery::createBottomLeftTabWidget()
+void
+WidgetGallery::createBottomLeftTabWidget()
 {
     m_bottomLeftTabWidget = new QTabWidget;
     m_bottomLeftTabWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
@@ -223,7 +247,7 @@ void WidgetGallery::createBottomLeftTabWidget()
     tab1->setLayout(tab1hbox);
 
     QWidget *tab2 = new QWidget;
-    m_textEdit = new QTextEdit;
+    m_textEdit    = new QTextEdit;
 
     m_textEdit->setPlainText(tr("Twinkle, twinkle, little star,\n"
                                 "How I wonder what you are.\n"
@@ -241,7 +265,7 @@ void WidgetGallery::createBottomLeftTabWidget()
     m_bottomLeftTabWidget->addTab(tab2, tr("Text &Edit"));
 
     QWidget *pTreeViewWidget = new QWidget;
-    QFileSystemModel *model = new QFileSystemModel(this);
+    QFileSystemModel *model  = new QFileSystemModel(this);
     model->setRootPath(QDir::currentPath());
     QHBoxLayout *pTabLayout = new QHBoxLayout;
     // pTabLayout->setMargin(0);
@@ -252,8 +276,8 @@ void WidgetGallery::createBottomLeftTabWidget()
     tree->setModel(model);
     pTabLayout->addWidget(tree);
 
-    QWidget *pListViewWidget = new QWidget;
-    QHBoxLayout *pListLayout = new QHBoxLayout;
+    QWidget *pListViewWidget      = new QWidget;
+    QHBoxLayout *pListLayout      = new QHBoxLayout;
     QStandardItemModel *listModel = new QStandardItemModel(this);
     // pListLayout->setMargin(0);
     pListViewWidget->setLayout(pListLayout);
@@ -267,7 +291,9 @@ void WidgetGallery::createBottomLeftTabWidget()
 
     for (uint8_t i = 0; i < 10; ++i) {
         QStandardItem *item = new QStandardItem;
-        item->setIcon(this->style() ? this->style()->standardIcon(QStyle::StandardPixmap(QStyle::SP_DirIcon + i)) : QIcon());
+        item->setIcon(this->style() ? this->style()->standardIcon(
+                                        QStyle::StandardPixmap(QStyle::SP_DirIcon + i))
+                                    : QIcon());
         item->setText(QStringLiteral("Row %1...............").arg(i + 1));
         item->setEnabled(i % 2);
         item->setCheckable(true);
@@ -276,7 +302,7 @@ void WidgetGallery::createBottomLeftTabWidget()
         listModel->appendRow(item);
     }
 
-    QWidget *toolbtns = new QWidget;
+    QWidget *toolbtns      = new QWidget;
     QVBoxLayout *tbVLayout = new QVBoxLayout(toolbtns);
     tbVLayout->addWidget(createToolButtons(nullptr, false));
     tbVLayout->addWidget(createToolButtons(nullptr, true));
@@ -289,7 +315,8 @@ void WidgetGallery::createBottomLeftTabWidget()
     m_bottomLeftTabWidget->addTab(new QWidget(), "tab 4");
 }
 
-void WidgetGallery::createBottomRightGroupBox()
+void
+WidgetGallery::createBottomRightGroupBox()
 {
     m_bottomRightGroupBox = new QGroupBox(tr("Group 3"));
     m_bottomRightGroupBox->setCheckable(true);
@@ -319,7 +346,8 @@ void WidgetGallery::createBottomRightGroupBox()
         testActoin->setProperty("_d_menu_item_redpoint", checked);
     });
     menu->addAction(testActoin);
-    QObject::connect(m_lineEdit, &QLineEdit::textChanged, m_lineEdit, [menu]() { menu->popup(QCursor::pos()); });
+    QObject::connect(
+      m_lineEdit, &QLineEdit::textChanged, m_lineEdit, [menu]() { menu->popup(QCursor::pos()); });
 
     m_spinBox = new QSpinBox(m_bottomRightGroupBox);
     m_spinBox->setValue(50);
@@ -365,7 +393,8 @@ void WidgetGallery::createBottomRightGroupBox()
 }
 
 //! [13]
-void WidgetGallery::createProgressBar()
+void
+WidgetGallery::createProgressBar()
 {
     m_progressBar = new QProgressBar;
     m_progressBar->setRange(0, 10000);
@@ -377,11 +406,15 @@ void WidgetGallery::createProgressBar()
 }
 //! [13]
 
-QToolButton *WidgetGallery::toolBtn(
-    QToolButton::ToolButtonPopupMode mode, const QString &text, bool hasMenu, bool hasIcon, Qt::ToolButtonStyle style)
+QToolButton *
+WidgetGallery::toolBtn(QToolButton::ToolButtonPopupMode mode,
+                       const QString &text,
+                       bool hasMenu,
+                       bool hasIcon,
+                       Qt::ToolButtonStyle style)
 {
     QToolButton *btn = new QToolButton;
-    QMenu *menu = new QMenu;
+    QMenu *menu      = new QMenu;
     menu->addAction("action1");
     menu->addAction("action2");
     if (hasMenu)
@@ -398,7 +431,8 @@ QToolButton *WidgetGallery::toolBtn(
     return btn;
 }
 
-QWidget *WidgetGallery::createToolButtons(QWidget *parent, bool hasMenu)
+QWidget *
+WidgetGallery::createToolButtons(QWidget *parent, bool hasMenu)
 {
     QWidget *holder = new QWidget(parent);
     holder->resize(300, 500);
@@ -411,49 +445,50 @@ QWidget *WidgetGallery::createToolButtons(QWidget *parent, bool hasMenu)
     gridLayout->addWidget(new QLabel("FollowStyle"), 0, 5);
     QString tmp = +hasMenu ? QString("(hasMenu)") : QString("(NoMenu)");
     for (int i = 0; i < 3; ++i) {
-        auto mode = static_cast<QToolButton::ToolButtonPopupMode>(i);
+        auto mode          = static_cast<QToolButton::ToolButtonPopupMode>(i);
         QMetaEnum metaEnum = QMetaEnum::fromType<QToolButton::ToolButtonPopupMode>();
 
         gridLayout->addWidget(new QLabel(metaEnum.valueToKey(mode) + tmp), i + 1, 0);
 
         if (hasMenu) {
             QToolButton *menuTextIconBtnUnderIconOnly =
-                toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonIconOnly);
+              toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonIconOnly);
             gridLayout->addWidget(menuTextIconBtnUnderIconOnly, i + 1, 1);
 
             QToolButton *menuTextIconBtnUnderTextOnly =
-                toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextOnly);
+              toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextOnly);
             gridLayout->addWidget(menuTextIconBtnUnderTextOnly, i + 1, 2);
 
-            QToolButton *menuTextIconBtn = toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
+            QToolButton *menuTextIconBtn = toolBtn(
+              mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
             gridLayout->addWidget(menuTextIconBtn, i + 1, 3);
 
             QToolButton *menuTextIconBtnUnder =
-                toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
+              toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
             gridLayout->addWidget(menuTextIconBtnUnder, i + 1, 4);
 
             QToolButton *menuTextIconBtnUnderFollow =
-                toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonFollowStyle);
+              toolBtn(mode, "ToolButton", true, true, Qt::ToolButtonStyle::ToolButtonFollowStyle);
             gridLayout->addWidget(menuTextIconBtnUnderFollow, i + 1, 5);
         } else {
             QToolButton *noMenuTextIconBtnIconOnly =
-                toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonIconOnly);
+              toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonIconOnly);
             gridLayout->addWidget(noMenuTextIconBtnIconOnly, i + 1, 1);
 
             QToolButton *noMenuTextIconBtnTextOnly =
-                toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextOnly);
+              toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextOnly);
             gridLayout->addWidget(noMenuTextIconBtnTextOnly, i + 1, 2);
 
-            QToolButton *noMenuTextIconBtn =
-                toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
+            QToolButton *noMenuTextIconBtn = toolBtn(
+              mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
             gridLayout->addWidget(noMenuTextIconBtn, i + 1, 3);
 
-            QToolButton *noMenuTextIconBtnUnder =
-                toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
+            QToolButton *noMenuTextIconBtnUnder = toolBtn(
+              mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
             gridLayout->addWidget(noMenuTextIconBtnUnder, i + 1, 4);
 
             QToolButton *noMenuTextIconBtnFollow =
-                toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonFollowStyle);
+              toolBtn(mode, "ToolButton", false, true, Qt::ToolButtonStyle::ToolButtonFollowStyle);
             gridLayout->addWidget(noMenuTextIconBtnFollow, i + 1, 5);
         }
     }
