@@ -191,6 +191,8 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
     case QPlatformTheme::MouseCursorSize:
         return XCURSOR_SIZE.value_or(QPlatformTheme::themeHint(hint));
 #endif
+    case QPlatformTheme::ShowShortcutsInContextMenus:
+        return true;
     default:
         return QPlatformTheme::themeHint(hint);
     }
