@@ -27,8 +27,11 @@ constexpr auto TOML_EXAMPLE = R"(
 
 Q_LOGGING_CATEGORY(MarineTheme, "MarineTheme")
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 constexpr std::string CONFIGDIR = "marinetheme6";
-
+#else
+constexpr std::string CONFIGDIR = "marinetheme5";
+#endif
 constexpr std::string SAVECONFIG = "setting.toml";
 
 constexpr std::string DEFAULT_FILECHOOSER = "default";
@@ -102,7 +105,12 @@ MarinePlatformTheme::readSettings()
                                             : QStringList{};
         } else {
             if (theme.has_value()) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
                 qCDebug(MarineTheme) << "Theme" << theme.value() << "not in keys";
+#else
+                qCDebug(MarineTheme)
+                  << "Theme" << QString::fromStdString(theme.value()) << "not in keys";
+#endif
                 qCDebug(MarineTheme) << "Available is " << themekeys;
             }
         }
@@ -112,10 +120,21 @@ MarinePlatformTheme::readSettings()
         m_scrollLen = scroll;
 
     } catch (const toml::parse_error &err) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
         qWarning(MarineTheme) << "Error parsing file '" << *err.source().path << "':\n"
                               << err.description() << "\n  (" << err.source().begin.line << ")\n";
+#else
+        qWarning(MarineTheme) << "Error parsing file '"
+                              << QString::fromStdString(*err.source().path) << "':\n"
+                              << QString::fromStdString(err.description().data()) << "\n  ("
+                              << err.source().begin.line << ")\n";
+#endif
         qCDebug(MarineTheme) << "There is not a configfile, there is an example";
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
         qCDebug(MarineTheme).noquote() << TOML_EXAMPLE;
+#else
+        qCDebug(MarineTheme).noquote() << QString::fromStdString(TOML_EXAMPLE.data());
+#endif
         qCDebug(MarineTheme) << "Write it in " << configpath;
 
         m_filechoosertheme =
@@ -123,7 +142,12 @@ MarinePlatformTheme::readSettings()
         if (QStyleFactory::keys().contains(QString::fromStdString(DEFAULT_THEME))) {
             m_stylename.append(QString::fromStdString(DEFAULT_THEME));
         } else {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
             qCWarning(MarineTheme) << "Theme " << DEFAULT_THEME << "not contains in themelists";
+#else
+            qCWarning(MarineTheme)
+              << "Theme " << QString::fromStdString(DEFAULT_THEME) << "not contains in themelists";
+#endif
             qCDebug(MarineTheme) << "available themelists: " << QStyleFactory::keys();
         }
         m_iconTheme = QString::fromStdString(DEFAULT_ICON);
@@ -154,10 +178,12 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
         return m_iconTheme;
     case QPlatformTheme::WheelScrollLines:
         return m_scrollLen.value_or(QPlatformTheme::themeHint(hint).toInt());
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     case QPlatformTheme::MouseCursorTheme:
         return XCURSOR_THEME.value_or(QPlatformTheme::themeHint(hint));
     case QPlatformTheme::MouseCursorSize:
         return XCURSOR_SIZE.value_or(QPlatformTheme::themeHint(hint));
+#endif
     default:
         return QPlatformTheme::themeHint(hint);
     }

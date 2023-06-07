@@ -1,6 +1,6 @@
 set(LIB_NAME marinePlatformTheme)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 find_package(tomlplusplus REQUIRED)
 
 add_library(${LIB_NAME} MODULE
