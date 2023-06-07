@@ -16,4 +16,7 @@ target_link_libraries(${LIB_NAME} PRIVATE
   Qt::Core
   Qt::Gui
   Qt::GuiPrivate
-  Qt::Widgets)
+  Qt::Widgets
+)
+
+install(TARGETS ${LIB_NAME} DESTINATION ${QT_PLUGIN_DIR}/platformthemes)

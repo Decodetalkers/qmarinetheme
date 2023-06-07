@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(styleplugin LANGUAGES CXX)
 
+set(QT_PLUGIN_DIR "/usr/lib/qt6/plugins" CACHE STRING "PLUGIN DIR For qt")
+
+include(GNUInstallDirs)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
