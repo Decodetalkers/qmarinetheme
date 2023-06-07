@@ -8,6 +8,7 @@ if(${QT_VERSION} STREQUAL "5" AND ${SUPPORT_KDE})
   find_package(KF5Config REQUIRED)
   find_package(KF5ConfigWidgets REQUIRED)
   find_package(KF5IconThemes REQUIRED)
+  find_package(Qt5ThemeSupport REQUIRED)
 endif()
 
 add_library(${LIB_NAME} MODULE
@@ -31,6 +32,7 @@ if(${QT_VERSION} STREQUAL "5" AND ${SUPPORT_KDE})
     KF5::ConfigCore
     KF5::ConfigWidgets
     KF5::IconThemes
+    Qt5::ThemeSupportPrivate
   )
 endif()
 

@@ -2,12 +2,13 @@
 
 #include <QObject>
 #include <optional>
+#include <private/qgenericunixthemes_p.h>
 #include <qpa/qplatformtheme.h>
 #include <sys/types.h>
 
 class MarinePlatformTheme
   : public QObject
-  , public QPlatformTheme
+  , public QGenericUnixTheme
 {
     Q_OBJECT
 public:
