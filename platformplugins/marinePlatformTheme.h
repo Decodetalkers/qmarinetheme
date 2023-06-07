@@ -1,7 +1,9 @@
 #pragma once
 
 #include <QObject>
+#include <optional>
 #include <qpa/qplatformtheme.h>
+#include <sys/types.h>
 
 class MarinePlatformTheme
   : public QObject
@@ -26,4 +28,5 @@ private:
     QPlatformTheme *m_filechoosertheme;
     QStringList m_stylename;
     QString m_iconTheme;
+    std::optional<u_int> m_scrollLen;
 };

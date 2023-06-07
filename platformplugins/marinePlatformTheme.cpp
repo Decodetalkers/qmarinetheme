@@ -22,6 +22,7 @@ constexpr auto TOML_EXAMPLE = R"(
     theme = "adwaita"
     dialogtype = "xdgdesktopportal"
     iconstyle = "breeze"
+    wheelscroll = 1
 )"sv;
 
 Q_LOGGING_CATEGORY(MarineTheme, "MarineTheme")
@@ -79,6 +80,7 @@ MarinePlatformTheme::readSettings()
         std::optional<std::string> theme      = tbl["theme"].value<std::string>();
         std::optional<std::string> dialogtype = tbl["dialogtype"].value<std::string>();
         std::optional<std::string> iconstyle  = tbl["iconstyle"].value<std::string>();
+        std::optional<u_int> scroll           = tbl["wheelscroll"].value<u_int>();
         auto keys                             = QPlatformThemeFactory::keys();
         if (dialogtype.has_value()) {
             auto dialogtype_v = QString::fromStdString(dialogtype.value());
@@ -98,6 +100,8 @@ MarinePlatformTheme::readSettings()
         m_stylename =
           theme.has_value() ? QStringList{QString::fromStdString(theme.value())} : QStringList{};
         m_iconTheme = QString::fromStdString(iconstyle.value_or(DEFAULT_ICON));
+
+        m_scrollLen = scroll;
 
     } catch (const toml::parse_error &err) {
         qWarning(MarineTheme) << "Error parsing file '" << *err.source().path << "':\n"
@@ -140,6 +144,8 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
         return m_stylename;
     case QPlatformTheme::SystemIconThemeName:
         return m_iconTheme;
+    case QPlatformTheme::WheelScrollLines:
+        return m_scrollLen.value_or(QPlatformTheme::themeHint(hint).toInt());
     case QPlatformTheme::MouseCursorTheme:
         return XCURSOR_THEME.value_or(QPlatformTheme::themeHint(hint));
     case QPlatformTheme::MouseCursorSize:
