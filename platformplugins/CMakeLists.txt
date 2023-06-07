@@ -3,6 +3,13 @@ set(LIB_NAME marinePlatformTheme)
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets)
 find_package(tomlplusplus REQUIRED)
 
+if(${QT_VERSION} STREQUAL "5" AND ${SUPPORT_KDE})
+  add_definitions(-DSUPPORT_KDE)
+  find_package(KF5Config REQUIRED)
+  find_package(KF5ConfigWidgets REQUIRED)
+  find_package(KF5IconThemes REQUIRED)
+endif()
+
 add_library(${LIB_NAME} MODULE
   marinePlatformTheme.h marinePlatformTheme.cpp
   marineThemePlugin.h marineThemePlugin.cpp
@@ -18,5 +25,13 @@ target_link_libraries(${LIB_NAME} PRIVATE
   Qt::GuiPrivate
   Qt::Widgets
 )
+
+if(${QT_VERSION} STREQUAL "5" AND ${SUPPORT_KDE})
+  target_link_libraries(${LIB_NAME} PRIVATE
+    KF5::ConfigCore
+    KF5::ConfigWidgets
+    KF5::IconThemes
+  )
+endif()
 
 install(TARGETS ${LIB_NAME} DESTINATION ${QT_PLUGIN_DIR}/platformthemes)

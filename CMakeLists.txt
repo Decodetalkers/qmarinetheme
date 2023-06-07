@@ -3,6 +3,8 @@ project(styleplugin LANGUAGES CXX)
 
 set(QT_PLUGIN_DIR "/usr/lib/qt6/plugins" CACHE STRING "PLUGIN DIR For qt")
 
+option(SUPPORT_KDE "support for kde icon themes" ON)
+
 set(QT_VERSION "6" CACHE STRING "Qt Version")
 include(GNUInstallDirs)
 

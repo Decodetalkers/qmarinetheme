@@ -16,6 +16,12 @@
 #include <optional>
 #include <string>
 
+#ifdef SUPPORT_KDE
+#include <QIconEngine>
+#include <kiconengine.h>
+#include <KIconLoader>
+#endif
+
 using namespace std::string_view_literals;
 
 constexpr auto TOML_EXAMPLE = R"(
@@ -32,6 +38,7 @@ constexpr std::string CONFIGDIR = "marinetheme6";
 #else
 constexpr std::string CONFIGDIR = "marinetheme5";
 #endif
+
 constexpr std::string SAVECONFIG = "setting.toml";
 
 constexpr std::string DEFAULT_FILECHOOSER = "default";
@@ -188,3 +195,11 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
         return QPlatformTheme::themeHint(hint);
     }
 }
+
+#ifdef SUPPORT_KDE
+QIconEngine *
+MarinePlatformTheme::createIconEngine(const QString &iconName) const
+{
+    return new KIconEngine(iconName, KIconLoader::global());
+}
+#endif

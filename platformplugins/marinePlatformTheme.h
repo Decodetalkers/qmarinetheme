@@ -21,6 +21,10 @@ public:
 
     virtual QVariant themeHint(ThemeHint hint) const override;
 
+#ifdef SUPPORT_KDE
+    virtual QIconEngine *createIconEngine(const QString &iconName) const override;
+#endif
+
 private:
     void readSettings();
 
