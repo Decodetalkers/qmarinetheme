@@ -1,11 +1,13 @@
 pkgname=qmarineplatformtheme
+_pkgname=qt6ct
 pkgver=1.0
 pkgrel=1
 pkgdesc="Another qt5ct for qt6, use toml as config"
 arch=('x86_64' 'aarch64')
 license=('MIT')
 makedepends=('git' 'ninja' 'cmake' 'tomlplusplus')
-
+provides=("$_pkgname")
+conflicts=("$_pkgname")
 source=('source.tar.gz')
 sha512sums=('SKIP')
 
