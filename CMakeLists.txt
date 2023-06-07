@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(styleplugin LANGUAGES CXX)
+project(qmarinetheme
+  VERSION 0.1
+  DESCRIPTION "A theme settting config with toml"
+  LANGUAGES CXX
+)
 
 set(QT_PLUGIN_DIR "/usr/lib/qt6/plugins" CACHE STRING "PLUGIN DIR For qt")
 
