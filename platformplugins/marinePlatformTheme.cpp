@@ -19,7 +19,7 @@
 using namespace std::string_view_literals;
 
 constexpr auto TOML_EXAMPLE = R"(
-    theme = "adwaita"
+    theme = "Adwaita"
     dialogtype = "xdgdesktopportal"
     iconstyle = "breeze"
     wheelscroll = 1
@@ -33,9 +33,9 @@ constexpr std::string SAVECONFIG = "setting.toml";
 
 constexpr std::string DEFAULT_FILECHOOSER = "default";
 
-constexpr std::string DEFAULT_THEME = "adwaita";
+constexpr std::string DEFAULT_THEME = "Adwaita";
 
-constexpr std::string DEFAULT_ICON = "adwaita";
+constexpr std::string DEFAULT_ICON = "Adwaita";
 
 constexpr auto FILECHOOSER_AVAILABLE = R"(
     gtk3: gtk3 filechooser
@@ -81,24 +81,32 @@ MarinePlatformTheme::readSettings()
         std::optional<std::string> dialogtype = tbl["dialogtype"].value<std::string>();
         std::optional<std::string> iconstyle  = tbl["iconstyle"].value<std::string>();
         std::optional<u_int> scroll           = tbl["wheelscroll"].value<u_int>();
-        auto keys                             = QPlatformThemeFactory::keys();
+        auto pakeys                           = QPlatformThemeFactory::keys();
         if (dialogtype.has_value()) {
             auto dialogtype_v = QString::fromStdString(dialogtype.value());
-            if (keys.contains(dialogtype_v)) {
+            if (pakeys.contains(dialogtype_v)) {
                 m_filechoosertheme = QPlatformThemeFactory::create(dialogtype_v);
             } else {
-                qCDebug(MarineTheme) << dialogtype_v << " Not in " << keys;
+                qCDebug(MarineTheme) << dialogtype_v << " Not in " << pakeys;
                 m_filechoosertheme =
                   QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
             }
         } else {
-            qCDebug(MarineTheme) << " Not set filechooser, available is " << keys;
+            qCDebug(MarineTheme) << " Not set filechooser, available is " << pakeys;
             m_filechoosertheme =
               QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
         }
+        auto themekeys = QStyleFactory::keys();
+        if (themekeys.contains(QString::fromStdString(theme.value_or("")))) {
+            m_stylename = theme.has_value() ? QStringList{QString::fromStdString(theme.value())}
+                                            : QStringList{};
+        } else {
+            if (theme.has_value()) {
+                qCDebug(MarineTheme) << "Theme" << theme.value() << "not in keys";
+                qCDebug(MarineTheme) << "Available is " << themekeys;
+            }
+        }
 
-        m_stylename =
-          theme.has_value() ? QStringList{QString::fromStdString(theme.value())} : QStringList{};
         m_iconTheme = QString::fromStdString(iconstyle.value_or(DEFAULT_ICON));
 
         m_scrollLen = scroll;
