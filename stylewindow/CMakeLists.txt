@@ -1,6 +1,6 @@
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Widgets)
 
 add_executable(
   styleplugin

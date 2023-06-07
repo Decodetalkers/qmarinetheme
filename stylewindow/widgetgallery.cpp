@@ -15,9 +15,13 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     m_styleComboBox->addItem("NorwegianWood");
     m_styleComboBox->addItems(QStyleFactory::keys());
     auto keys = QStyleFactory::keys();
-    int i = 1;
+    int i     = 1;
     for (; i < keys.length(); i++) {
-        if (keys[i-1].toLower() == qApp->style()->name()) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+        if (keys[i - 1].toLower() == qApp->style()->name()) {
+#else
+        if (keys[i - 1].toLower() == qApp->style()->objectName()) {
+#endif
             break;
         }
     }

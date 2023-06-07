@@ -5,3 +5,18 @@ qt5ct has some bugs, on qt6 it will make QGuiApplications coredump, this made me
 and I don't like to use gui to set config, I like to use toml, so I try to write a new one, and want to try to use cpp20, even cpp23, and it is now what the Program is.. I want to write a platform theme since a long time, thanks to qt5ct, now I write a new one, thanks to qt5ct
 
 so...it is just a training
+
+It support qt5 and qt6, you need to write config
+
+position is in `{XDG_CONFIG_PATh}/marinetheme5` or `{XDG_CONFIG_PATh}/marinetheme6`
+
+example is like
+
+```toml
+theme = "Adwaita"
+dialogtype = "xdgdesktopportal"
+iconstyle = "breeze"
+wheelscroll = 1
+```
+
+support kde , now you can use dolphin

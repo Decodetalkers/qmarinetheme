@@ -17,9 +17,9 @@
 #include <string>
 
 #ifdef SUPPORT_KDE
+#include <KIconLoader>
 #include <QIconEngine>
 #include <kiconengine.h>
-#include <KIconLoader>
 #endif
 
 using namespace std::string_view_literals;
