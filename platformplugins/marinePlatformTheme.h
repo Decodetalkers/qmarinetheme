@@ -22,6 +22,9 @@ public:
 
     virtual QVariant themeHint(ThemeHint hint) const override;
 
+    virtual QIcon fileIcon(const QFileInfo &fileInfo,
+                           QPlatformTheme::IconOptions iconOptions = {}) const override;
+
 #ifdef SUPPORT_KDE
     virtual QIconEngine *createIconEngine(const QString &iconName) const override;
 #endif

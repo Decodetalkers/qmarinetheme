@@ -11,6 +11,10 @@
 
 #include <toml++/toml.h>
 
+#include <QFileInfo>
+#include <QIcon>
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <format>
 #include <functional>
 #include <optional>
@@ -194,6 +198,18 @@ MarinePlatformTheme::themeHint(ThemeHint hint) const
     default:
         return QGenericUnixTheme::themeHint(hint);
     }
+}
+
+QIcon
+MarinePlatformTheme::fileIcon(const QFileInfo &fileInfo,
+                              QPlatformTheme::IconOptions iconOptions) const
+{
+    if ((iconOptions & DontUseCustomDirectoryIcons) && fileInfo.isDir())
+        return QIcon::fromTheme(QLatin1String("inode-directory"));
+
+    QMimeDatabase db;
+    QMimeType type = db.mimeTypeForFile(fileInfo);
+    return QIcon::fromTheme(type.iconName());
 }
 
 #ifdef SUPPORT_KDE
