@@ -19,6 +19,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <vector>
 
 #ifdef SUPPORT_KDE
 #include <KIconLoader>
@@ -50,6 +51,18 @@ constexpr std::string DEFAULT_FILECHOOSER = "default";
 constexpr std::string DEFAULT_THEME = "Adwaita";
 
 constexpr std::string DEFAULT_ICON = "Adwaita";
+
+constexpr std::vector<std::string>
+myThemeName()
+{
+    return {"marine",
+            "qt5ct"
+#ifdef DEBUGMODE
+            ,
+            "marine_test"
+#endif
+    };
+};
 
 constexpr auto FILECHOOSER_AVAILABLE = R"(
     gtk3: gtk3 filechooser
@@ -97,11 +110,16 @@ MarinePlatformTheme::readSettings()
         std::optional<u_int> scroll           = tbl["wheelscroll"].value<u_int>();
         auto pakeys                           = QPlatformThemeFactory::keys();
         if (dialogtype.has_value()) {
-            auto dialogtype_v = QString::fromStdString(dialogtype.value());
-            if (pakeys.contains(dialogtype_v)) {
+            auto dialogtype_v    = QString::fromStdString(dialogtype.value());
+            const auto themelist = myThemeName();
+            bool notfindkey =
+              std::find(themelist.begin(), themelist.end(), dialogtype.value()) == themelist.end();
+            if (pakeys.contains(dialogtype_v) && notfindkey) {
                 m_filechoosertheme = QPlatformThemeFactory::create(dialogtype_v);
             } else {
-                qCDebug(MarineTheme) << dialogtype_v << " Not in " << pakeys;
+                qCDebug(MarineTheme) << dialogtype_v << " Not in keys ";
+                qCDebug(MarineTheme) << "all Themes" << pakeys;
+                qCDebug(MarineTheme) << "Should not set" << myThemeName();
                 m_filechoosertheme =
                   QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
             }
