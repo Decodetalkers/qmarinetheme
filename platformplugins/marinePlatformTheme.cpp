@@ -238,6 +238,7 @@ MarinePlatformTheme::createIconEngine(const QString &iconName) const
 }
 #endif
 
+#ifdef DEBUGMODE
 namespace Tests {
 
 constexpr bool
@@ -282,3 +283,4 @@ check()
 }
 
 }
+#endif
