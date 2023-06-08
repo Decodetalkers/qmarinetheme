@@ -237,3 +237,48 @@ MarinePlatformTheme::createIconEngine(const QString &iconName) const
     return new KIconEngine(iconName, KIconLoader::global());
 }
 #endif
+
+namespace Tests {
+
+constexpr bool
+check_cycle_marine()
+{
+    const auto themelist     = myThemeName();
+    const std::string name_a = "marine";
+    return (std::find(themelist.begin(), themelist.end(), name_a) != themelist.end());
+}
+
+constexpr bool
+check_cycle_marine_test()
+{
+    const auto themelist     = myThemeName();
+    const std::string name_a = "marine_test";
+    return (std::find(themelist.begin(), themelist.end(), name_a) != themelist.end());
+}
+
+constexpr bool
+check_cycle_marine_qt5ct()
+{
+    const auto themelist     = myThemeName();
+    const std::string name_a = "qt5ct";
+    return (std::find(themelist.begin(), themelist.end(), name_a) != themelist.end());
+}
+
+constexpr bool
+check_cycle_marine_xdg()
+{
+    const auto themelist     = myThemeName();
+    const std::string name_a = "xdgdesktopportal";
+    return (std::find(themelist.begin(), themelist.end(), name_a) != themelist.end());
+}
+
+constexpr void
+check()
+{
+    static_assert(check_cycle_marine(), "Check Keyword marine");
+    static_assert(check_cycle_marine_test(), "Check Keyword marine_test");
+    static_assert(check_cycle_marine_qt5ct(), "Check Keyword qt5ct");
+    static_assert(!check_cycle_marine_xdg(), "Check Keyword xdgdesktopportal not in list");
+}
+
+}
