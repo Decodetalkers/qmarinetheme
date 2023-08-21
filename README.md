@@ -20,3 +20,12 @@ wheelscroll = 1
 ```
 
 support kde , now you can use dolphin
+
+## How to test
+```bash
+export QT_PLUGIN_PATH = $pwd/build/stylewindow/
+export QT_QPA_PLATFORMTHEME = marine_test
+
+```
+
+Then run any qt program
