@@ -119,7 +119,9 @@ MarinePlatformTheme::readSettings()
             } else {
                 qCDebug(MarineTheme) << dialogtype_v << " Not in keys ";
                 qCDebug(MarineTheme) << "all Themes" << pakeys;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
                 qCDebug(MarineTheme) << "Should not set" << myThemeName();
+#endif
                 m_filechoosertheme =
                   QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
             }
