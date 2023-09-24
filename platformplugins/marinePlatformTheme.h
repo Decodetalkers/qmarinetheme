@@ -31,9 +31,13 @@ public:
 
 private:
     void readSettings();
+    void readXdgDesktopPortalVersion();
 
 private:
     QPlatformTheme *m_filechoosertheme;
+    bool m_useXdgDesktopPortal;
+    int m_useXdgDesktopPortalVersion;
+    QPlatformTheme *m_basetheme;
     QStringList m_stylename;
     QString m_iconTheme;
     std::optional<u_int> m_scrollLen;

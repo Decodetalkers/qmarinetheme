@@ -1,20 +1,26 @@
 #include "marinePlatformTheme.h"
+#include "qxdgdesktopportalfiledialog_p.h"
 
 #include <QLoggingCategory>
 
 #include <QStyleFactory>
 #include <qpa/qplatformthemefactory_p.h>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 #include <QFile>
+#include <QFileInfo>
+#include <QIcon>
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QStandardPaths>
 #include <QVariant>
 
 #include <toml++/toml.h>
 
-#include <QFileInfo>
-#include <QIcon>
-#include <QMimeDatabase>
-#include <QMimeType>
 #include <format>
 #include <functional>
 #include <optional>
@@ -94,6 +100,9 @@ const std::optional<QVariant> XCURSOR_SIZE = std::invoke([]() -> std::optional<Q
 });
 
 MarinePlatformTheme::MarinePlatformTheme()
+  : m_basetheme(QPlatformThemeFactory::create("gtk3"))
+  , m_useXdgDesktopPortal(false)
+  , m_useXdgDesktopPortalVersion(0)
 {
     readSettings();
 }
@@ -110,20 +119,26 @@ MarinePlatformTheme::readSettings()
         std::optional<u_int> scroll           = tbl["wheelscroll"].value<u_int>();
         auto pakeys                           = QPlatformThemeFactory::keys();
         if (dialogtype.has_value()) {
-            auto dialogtype_v    = QString::fromStdString(dialogtype.value());
-            const auto themelist = myThemeName();
-            bool notfindkey =
-              std::find(themelist.begin(), themelist.end(), dialogtype.value()) == themelist.end();
-            if (pakeys.contains(dialogtype_v) && notfindkey) {
-                m_filechoosertheme = QPlatformThemeFactory::create(dialogtype_v);
+            auto dialogtype_v = QString::fromStdString(dialogtype.value());
+            if (dialogtype_v == "xdgdesktopportal") {
+                m_useXdgDesktopPortal = true;
+                readXdgDesktopPortalVersion();
             } else {
-                qCDebug(MarineTheme) << dialogtype_v << " Not in keys ";
-                qCDebug(MarineTheme) << "all Themes" << pakeys;
+                const auto themelist = myThemeName();
+                bool notfindkey =
+                  std::find(themelist.begin(), themelist.end(), dialogtype.value()) ==
+                  themelist.end();
+                if (pakeys.contains(dialogtype_v) && notfindkey) {
+                    m_filechoosertheme = QPlatformThemeFactory::create(dialogtype_v);
+                } else {
+                    qCDebug(MarineTheme) << dialogtype_v << " Not in keys ";
+                    qCDebug(MarineTheme) << "all Themes" << pakeys;
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-                qCDebug(MarineTheme) << "Should not set" << myThemeName();
+                    qCDebug(MarineTheme) << "Should not set" << myThemeName();
 #endif
-                m_filechoosertheme =
-                  QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
+                    m_filechoosertheme =
+                      QPlatformThemeFactory::create(QString::fromStdString(DEFAULT_FILECHOOSER));
+                }
             }
         } else {
             qCDebug(MarineTheme) << " Not set filechooser, available is " << pakeys;
@@ -185,9 +200,35 @@ MarinePlatformTheme::readSettings()
     }
 }
 
+void
+MarinePlatformTheme::readXdgDesktopPortalVersion()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("org.freedesktop.portal.Desktop",
+                                                          "/org/freedesktop/portal/desktop",
+                                                          "org.freedesktop.DBus.Properties",
+                                                          "Get");
+    message << "org.freedesktop.portal.FileChooser"
+            << "version";
+    QDBusPendingCall pendingCall     = QDBusConnection::sessionBus().asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pendingCall);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     watcher,
+                     [this](QDBusPendingCallWatcher *watcher) {
+                         QDBusPendingReply<QVariant> reply = *watcher;
+                         if (reply.isValid()) {
+                             this->m_useXdgDesktopPortalVersion = reply.value().toUInt();
+                         }
+                         watcher->deleteLater();
+                     });
+}
+
 bool
 MarinePlatformTheme::usePlatformNativeDialog(DialogType type) const
 {
+    if (m_useXdgDesktopPortal) {
+        return m_basetheme->usePlatformNativeDialog(type);
+    }
     return m_filechoosertheme ? m_filechoosertheme->usePlatformNativeDialog(type)
                               : QPlatformTheme::usePlatformNativeDialog(type);
 }
@@ -195,6 +236,16 @@ MarinePlatformTheme::usePlatformNativeDialog(DialogType type) const
 QPlatformDialogHelper *
 MarinePlatformTheme::createPlatformDialogHelper(DialogType type) const
 {
+    if (type == FileDialog && m_useXdgDesktopPortal) {
+        // Older versions of FileChooser portal don't support opening directories, therefore we
+        // fallback to native file dialog opened inside the sandbox to open a directory.
+        if (m_basetheme->usePlatformNativeDialog(type))
+            return new QXdgDesktopPortalFileDialog(static_cast<QPlatformFileDialogHelper *>(
+                                                     m_basetheme->createPlatformDialogHelper(type)),
+                                                   m_useXdgDesktopPortalVersion);
+
+        return new QXdgDesktopPortalFileDialog;
+    }
     return m_filechoosertheme ? m_filechoosertheme->createPlatformDialogHelper(type)
                               : QPlatformTheme::createPlatformDialogHelper(type);
 }
