@@ -10,6 +10,11 @@ if(${QT_VERSION} STREQUAL "5" AND ${SUPPORT_KDE})
   find_package(KF5IconThemes REQUIRED)
   find_package(Qt5ServiceSupport)
   find_package(Qt5ThemeSupport REQUIRED)
+
+endif()
+
+if (${QT_VERSION} STREQUAL "6" AND ${AS_KDE6_PLUGIN})
+  add_definitions(-DUSE_AS_KDE_PLUGIN)
 endif()
 
 add_library(${LIB_NAME} MODULE

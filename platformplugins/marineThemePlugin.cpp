@@ -8,6 +8,9 @@ MarinePlatformThemePlugin::create(const QString &key, const QStringList &)
 #ifdef DEBUGMODE
         || key.toLower() == "marine_test"
 #endif
+#ifdef USE_AS_KDE_PLUGIN
+        || key.toLower() == "kde"
+#endif
     ) {
         return new MarinePlatformTheme;
     }
