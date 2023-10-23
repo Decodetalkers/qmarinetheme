@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(qmarinetheme
-  VERSION 0.1.3
+  VERSION 0.1.4
   DESCRIPTION "A theme settting config with toml"
   LANGUAGES CXX
 )
