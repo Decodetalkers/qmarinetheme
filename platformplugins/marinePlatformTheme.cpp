@@ -3,6 +3,7 @@
 
 #include <QLoggingCategory>
 
+#include <QGuiApplication>
 #include <QStyleFactory>
 #include <qpa/qplatformthemefactory_p.h>
 
@@ -13,10 +14,12 @@
 #include <QDBusPendingReply>
 #include <QFile>
 #include <QFileInfo>
+#include <QFileSystemWatcher>
 #include <QIcon>
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QStandardPaths>
+#include <QTimer>
 #include <QVariant>
 
 #include <toml++/toml.h>
@@ -85,6 +88,15 @@ get_config_path()
                   SAVECONFIG));
 }
 
+static QString
+get_config_dir()
+{
+    return QString::fromStdString(
+      std::format("{}/{}",
+                  QStandardPaths::writableLocation(QStandardPaths::ConfigLocation).toStdString(),
+                  CONFIGDIR));
+}
+
 const std::optional<QVariant> XCURSOR_THEME = std::invoke([]() -> std::optional<QString> {
     if (qEnvironmentVariableIsSet("XCURSOR_THEME")) {
         return qEnvironmentVariable("XCURSOR_THEME");
@@ -105,6 +117,23 @@ MarinePlatformTheme::MarinePlatformTheme()
   , m_useXdgDesktopPortalVersion(0)
 {
     readSettings();
+    if (QGuiApplication::desktopSettingsAware()) {
+        QMetaObject::invokeMethod(this, "createFsWatcher", Qt::QueuedConnection);
+    }
+}
+
+void
+MarinePlatformTheme::createFsWatcher()
+{
+    QFileSystemWatcher *watcher = new QFileSystemWatcher(this);
+    watcher->addPath(get_config_dir());
+
+    QTimer *timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(3000);
+    connect(
+      watcher, &QFileSystemWatcher::directoryChanged, timer, [timer](QString) { timer->start(); });
+    connect(timer, &QTimer::timeout, this, [this] { readSettings(); });
 }
 
 void
@@ -124,7 +153,8 @@ MarinePlatformTheme::readSettings()
                 m_useXdgDesktopPortal = true;
                 readXdgDesktopPortalVersion();
             } else {
-                const auto themelist = myThemeName();
+                m_useXdgDesktopPortal = false;
+                const auto themelist  = myThemeName();
                 bool notfindkey =
                   std::find(themelist.begin(), themelist.end(), dialogtype.value()) ==
                   themelist.end();

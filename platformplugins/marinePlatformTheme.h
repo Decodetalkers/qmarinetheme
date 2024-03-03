@@ -29,6 +29,9 @@ public:
     virtual QIconEngine *createIconEngine(const QString &iconName) const override;
 #endif
 
+private slots:
+    void createFsWatcher();
+
 private:
     void readSettings();
     void readXdgDesktopPortalVersion();
