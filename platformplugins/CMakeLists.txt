@@ -2,14 +2,19 @@ set(LIB_NAME marinePlatformTheme)
 
 find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus)
 find_package(tomlplusplus REQUIRED)
+
+if(${QT_VERSION} STREQUAL 5)
+  find_package(Qt5ServiceSupport)
+  find_package(Qt5ThemeSupport REQUIRED)
+  find_package(Qt5ThemeSupport REQUIRED)
+endif()
+
 if (${SUPPORT_KDE})
   add_definitions(-DSUPPORT_KDE)
   if(${QT_VERSION} STREQUAL 5)
     find_package(KF5Config REQUIRED)
     find_package(KF5ConfigWidgets REQUIRED)
     find_package(KF5IconThemes REQUIRED)
-    find_package(Qt5ServiceSupport)
-    find_package(Qt5ThemeSupport REQUIRED)
   elseif(${QT_VERSION} STREQUAL 6)
     find_package(KF6Config REQUIRED)
     find_package(KF6ConfigWidgets REQUIRED)
@@ -38,15 +43,18 @@ target_link_libraries(${LIB_NAME} PRIVATE
   Qt::Widgets
   Qt::DBus
 )
-
+if(${QT_VERSION} STREQUAL "5")
+  target_link_libraries(${LIB_NAME} PRIVATE
+    Qt5::ThemeSupportPrivate
+    Qt5::ServiceSupportPrivate
+  )
+endif()
 if(${SUPPORT_KDE})
   if(${QT_VERSION} STREQUAL "5")
     target_link_libraries(${LIB_NAME} PRIVATE
       KF5::ConfigCore
       KF5::ConfigWidgets
       KF5::IconThemes
-      Qt5::ThemeSupportPrivate
-      Qt5::ServiceSupportPrivate
     )
   elseif(${QT_VERSION} STREQUAL 6)
     target_link_libraries(${LIB_NAME} PRIVATE

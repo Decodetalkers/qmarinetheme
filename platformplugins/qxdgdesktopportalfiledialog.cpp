@@ -3,8 +3,12 @@
 // GPL-3.0-only
 
 #include "qxdgdesktopportalfiledialog_p.h"
-
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
 #include <private/qdesktopunixservices_p.h>
+#else
+#include <private/qgenericunixservices_p.h>
+#endif
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 
@@ -280,8 +284,13 @@ QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags,
     // TODO choices a(ssa(ss)s)
     // List of serialized combo boxes to add to the file chooser.
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
     auto unixServices = dynamic_cast<QDesktopUnixServices *>(
       QGuiApplicationPrivate::platformIntegration()->services());
+#else
+    auto unixServices = dynamic_cast<QGenericUnixServices *>(
+      QGuiApplicationPrivate::platformIntegration()->services());
+#endif
     if (parent && unixServices)
         message << unixServices->portalWindowIdentifier(parent);
     else
