@@ -7,7 +7,7 @@ project(qmarinetheme
 
 set(QT_PLUGIN_DIR "/usr/lib/qt6/plugins" CACHE STRING "PLUGIN DIR For qt")
 
-option(SUPPORT_KDE "support for kde icon themes" ON)
+option(SUPPORT_KDE "support for kde icon themes" OFF)
 option(AS_KDE6_PLUGIN "use as the qt platformplugin for kde" OFF)
 
 set(QT_VERSION "6" CACHE STRING "Qt Version")

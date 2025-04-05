@@ -4,7 +4,7 @@
 
 #include "qxdgdesktopportalfiledialog_p.h"
 
-#include <private/qgenericunixservices_p.h>
+#include <private/qdesktopunixservices_p.h>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 
@@ -280,7 +280,7 @@ QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags,
     // TODO choices a(ssa(ss)s)
     // List of serialized combo boxes to add to the file chooser.
 
-    auto unixServices = dynamic_cast<QGenericUnixServices *>(
+    auto unixServices = dynamic_cast<QDesktopUnixServices *>(
       QGuiApplicationPrivate::platformIntegration()->services());
     if (parent && unixServices)
         message << unixServices->portalWindowIdentifier(parent);
