@@ -2,7 +2,11 @@
 
 #include <QObject>
 #include <optional>
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+#include <private/qgenericunixtheme_p.h>
+#else
 #include <private/qgenericunixthemes_p.h>
+#endif
 #include <qpa/qplatformtheme.h>
 #include <sys/types.h>
 

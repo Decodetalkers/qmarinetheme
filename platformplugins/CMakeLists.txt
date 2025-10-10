@@ -1,6 +1,6 @@
 set(LIB_NAME marinePlatformTheme)
 
-find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus)
+find_package(Qt${QT_VERSION} REQUIRED COMPONENTS Core Gui GuiPrivate Widgets DBus)
 find_package(tomlplusplus REQUIRED)
 
 if(${QT_VERSION} STREQUAL 5)
