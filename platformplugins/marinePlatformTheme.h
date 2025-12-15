@@ -17,6 +17,7 @@ class MarinePlatformTheme
       public QGenericUnixTheme {
     Q_OBJECT
 public:
+
     explicit MarinePlatformTheme();
 
     ~MarinePlatformTheme() = default;
@@ -44,6 +45,8 @@ private:
     void readSettings();
     void readXdgDesktopPortalVersion();
     void xdpSettingsInit();
+    bool hasWidgets();
+    void colorSchemeUpdateCheck(uint scheme);
 
 private:
     QPlatformTheme* m_filechoosertheme;

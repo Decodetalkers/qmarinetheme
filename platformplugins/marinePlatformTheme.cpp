@@ -5,6 +5,8 @@
 
 #include <QGuiApplication>
 #include <QStyleFactory>
+#include <qapplication.h>
+#include <qobject.h>
 #include <qpa/qplatformthemefactory_p.h>
 
 #include <QDBusConnection>
@@ -19,9 +21,11 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QStandardPaths>
+#include <QStyleHints>
 #include <QTimer>
 #include <QVariant>
-
+#include <QWidget>
+#include <qpa/qwindowsysteminterface.h>
 #include <toml++/toml.h>
 
 #include <format>
@@ -141,18 +145,15 @@ MarinePlatformTheme::xdpSettingsInit()
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pendingCall);
     connect(
       watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
-          qDebug() << watcher->reply().arguments();
           QDBusPendingReply<QDBusVariant> reply = *watcher;
-          uint theme                            = reply.value().variant().toUInt();
-          qDebug() << theme << reply.value().variant();
-          if (theme == 1) {
-              this->m_colorScheme = Qt::ColorScheme::Dark;
-          } else if (theme == 2) {
-              this->m_colorScheme = Qt::ColorScheme::Light;
-          } else {
-              this->m_colorScheme = Qt::ColorScheme::Unknown;
+          if (reply.isError()) {
+              qCDebug(MarineTheme) << "D-Bus Error" << reply.reply().errorMessage();
+              watcher->deleteLater();
+              return;
           }
+          uint theme = reply.value().variant().toUInt();
 
+          colorSchemeUpdateCheck(theme);
           watcher->deleteLater();
       });
     QDBusConnection::sessionBus().connect(QStringLiteral("org.freedesktop.portal.Desktop"),
@@ -162,6 +163,27 @@ MarinePlatformTheme::xdpSettingsInit()
                                           this,
                                           SLOT(xdpSettingsChanged(QString, QString, QDBusVariant)));
 }
+
+void
+MarinePlatformTheme::colorSchemeUpdateCheck(uint theme)
+{
+    Qt::ColorScheme new_scheme = Qt::ColorScheme::Unknown;
+
+    if (theme == 1) {
+        new_scheme = Qt::ColorScheme::Dark;
+    } else if (theme == 2) {
+        new_scheme = Qt::ColorScheme::Light;
+    } else {
+        new_scheme = Qt::ColorScheme::Unknown;
+    }
+    bool need_update = (m_colorScheme != new_scheme);
+    if (need_update) {
+        m_colorScheme = new_scheme;
+
+        QWindowSystemInterface::handleThemeChange();
+    }
+}
+
 void
 MarinePlatformTheme::xdpSettingsChanged(QString xdp_namespace, QString key, QDBusVariant value)
 {
@@ -173,13 +195,7 @@ MarinePlatformTheme::xdpSettingsChanged(QString xdp_namespace, QString key, QDBu
     }
     uint theme = value.variant().toUInt();
 
-    if (theme == 1) {
-        this->m_colorScheme = Qt::ColorScheme::Dark;
-    } else if (theme == 2) {
-        this->m_colorScheme = Qt::ColorScheme::Light;
-    } else {
-        this->m_colorScheme = Qt::ColorScheme::Unknown;
-    }
+    colorSchemeUpdateCheck(theme);
 }
 
 void
@@ -376,7 +392,13 @@ MarinePlatformTheme::fileIcon(const QFileInfo &fileInfo,
 Qt::ColorScheme
 MarinePlatformTheme::colorScheme() const
 {
-    return Qt::ColorScheme::Dark;
+    return m_colorScheme;
+}
+
+bool
+MarinePlatformTheme::hasWidgets()
+{
+    return qobject_cast<QApplication *>(qApp) != nullptr;
 }
 
 #ifdef SUPPORT_KDE
