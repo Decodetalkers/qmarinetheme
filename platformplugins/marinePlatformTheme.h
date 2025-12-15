@@ -2,6 +2,8 @@
 
 #include <QObject>
 #include <optional>
+#include <qdbusextratypes.h>
+#include <qvariant.h>
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
 #include <private/qgenericunixtheme_p.h>
 #else
@@ -11,9 +13,8 @@
 #include <sys/types.h>
 
 class MarinePlatformTheme
-  : public QObject
-  , public QGenericUnixTheme
-{
+    : public QObject,
+      public QGenericUnixTheme {
     Q_OBJECT
 public:
     explicit MarinePlatformTheme();
@@ -22,30 +23,35 @@ public:
 
     virtual bool usePlatformNativeDialog(DialogType type) const override;
 
-    virtual QPlatformDialogHelper *createPlatformDialogHelper(DialogType type) const override;
+    virtual QPlatformDialogHelper* createPlatformDialogHelper(DialogType type) const override;
 
     virtual QVariant themeHint(ThemeHint hint) const override;
 
-    virtual QIcon fileIcon(const QFileInfo &fileInfo,
-                           QPlatformTheme::IconOptions iconOptions = {}) const override;
+    virtual QIcon fileIcon(const QFileInfo& fileInfo,
+        QPlatformTheme::IconOptions iconOptions = {}) const override;
+
+    virtual Qt::ColorScheme colorScheme() const override;
 
 #ifdef SUPPORT_KDE
-    virtual QIconEngine *createIconEngine(const QString &iconName) const override;
+    virtual QIconEngine* createIconEngine(const QString& iconName) const override;
 #endif
 
 private slots:
     void createFsWatcher();
+    void xdpSettingsChanged(QString xdp_namespace, QString key, QDBusVariant value);
 
 private:
     void readSettings();
     void readXdgDesktopPortalVersion();
+    void xdpSettingsInit();
 
 private:
-    QPlatformTheme *m_filechoosertheme;
+    QPlatformTheme* m_filechoosertheme;
     bool m_useXdgDesktopPortal;
     int m_useXdgDesktopPortalVersion;
-    QPlatformTheme *m_basetheme;
+    QPlatformTheme* m_basetheme;
     QStringList m_stylename;
     QString m_iconTheme;
     std::optional<u_int> m_scrollLen;
+    Qt::ColorScheme m_colorScheme;
 };

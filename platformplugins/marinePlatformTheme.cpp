@@ -61,6 +61,10 @@ constexpr std::string DEFAULT_THEME = "Adwaita";
 
 constexpr std::string DEFAULT_ICON = "Adwaita";
 
+constexpr std::string COLOR_THEME = "color-scheme";
+
+const std::string SETTINGS_NAMESPACE = "org.freedesktop.appearance";
+
 constexpr std::vector<std::string>
 myThemeName()
 {
@@ -115,10 +119,66 @@ MarinePlatformTheme::MarinePlatformTheme()
   : m_basetheme(QPlatformThemeFactory::create("gtk3"))
   , m_useXdgDesktopPortal(false)
   , m_useXdgDesktopPortalVersion(0)
+  , m_colorScheme(Qt::ColorScheme::Unknown)
 {
     readSettings();
+    xdpSettingsInit();
     if (QGuiApplication::desktopSettingsAware()) {
         QMetaObject::invokeMethod(this, "createFsWatcher", Qt::QueuedConnection);
+    }
+}
+
+void
+MarinePlatformTheme::xdpSettingsInit()
+{
+    QDBusMessage message =
+      QDBusMessage::createMethodCall(QStringLiteral("org.freedesktop.portal.Desktop"),
+                                     QStringLiteral("/org/freedesktop/portal/desktop"),
+                                     QStringLiteral("org.freedesktop.portal.Settings"),
+                                     QStringLiteral("ReadOne"));
+    message << QString::fromStdString(SETTINGS_NAMESPACE) << QString::fromStdString(COLOR_THEME);
+    QDBusPendingCall pendingCall     = QDBusConnection::sessionBus().asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pendingCall);
+    connect(
+      watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *watcher) {
+          qDebug() << watcher->reply().arguments();
+          QDBusPendingReply<QDBusVariant> reply = *watcher;
+          uint theme                            = reply.value().variant().toUInt();
+          qDebug() << theme << reply.value().variant();
+          if (theme == 1) {
+              this->m_colorScheme = Qt::ColorScheme::Dark;
+          } else if (theme == 2) {
+              this->m_colorScheme = Qt::ColorScheme::Light;
+          } else {
+              this->m_colorScheme = Qt::ColorScheme::Unknown;
+          }
+
+          watcher->deleteLater();
+      });
+    QDBusConnection::sessionBus().connect(QStringLiteral("org.freedesktop.portal.Desktop"),
+                                          QStringLiteral("/org/freedesktop/portal/desktop"),
+                                          QStringLiteral("org.freedesktop.portal.Settings"),
+                                          QStringLiteral("SettingChanged"),
+                                          this,
+                                          SLOT(xdpSettingsChanged(QString, QString, QDBusVariant)));
+}
+void
+MarinePlatformTheme::xdpSettingsChanged(QString xdp_namespace, QString key, QDBusVariant value)
+{
+    if (xdp_namespace != SETTINGS_NAMESPACE) {
+        return;
+    }
+    if (key != COLOR_THEME) {
+        return;
+    }
+    uint theme = value.variant().toUInt();
+
+    if (theme == 1) {
+        this->m_colorScheme = Qt::ColorScheme::Dark;
+    } else if (theme == 2) {
+        this->m_colorScheme = Qt::ColorScheme::Light;
+    } else {
+        this->m_colorScheme = Qt::ColorScheme::Unknown;
     }
 }
 
@@ -311,6 +371,12 @@ MarinePlatformTheme::fileIcon(const QFileInfo &fileInfo,
     QMimeDatabase db;
     QMimeType type = db.mimeTypeForFile(fileInfo);
     return QIcon::fromTheme(type.iconName());
+}
+
+Qt::ColorScheme
+MarinePlatformTheme::colorScheme() const
+{
+    return Qt::ColorScheme::Dark;
 }
 
 #ifdef SUPPORT_KDE
