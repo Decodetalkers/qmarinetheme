@@ -123,15 +123,20 @@ MarinePlatformTheme::MarinePlatformTheme()
   : m_basetheme(QPlatformThemeFactory::create("gtk3"))
   , m_useXdgDesktopPortal(false)
   , m_useXdgDesktopPortalVersion(0)
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
   , m_colorScheme(Qt::ColorScheme::Unknown)
+#endif
 {
     readSettings();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     xdpSettingsInit();
+#endif
     if (QGuiApplication::desktopSettingsAware()) {
         QMetaObject::invokeMethod(this, "createFsWatcher", Qt::QueuedConnection);
     }
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 void
 MarinePlatformTheme::xdpSettingsInit()
 {
@@ -197,7 +202,7 @@ MarinePlatformTheme::xdpSettingsChanged(QString xdp_namespace, QString key, QDBu
 
     colorSchemeUpdateCheck(theme);
 }
-
+#endif
 void
 MarinePlatformTheme::createFsWatcher()
 {
@@ -389,17 +394,13 @@ MarinePlatformTheme::fileIcon(const QFileInfo &fileInfo,
     return QIcon::fromTheme(type.iconName());
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 Qt::ColorScheme
 MarinePlatformTheme::colorScheme() const
 {
     return m_colorScheme;
 }
-
-bool
-MarinePlatformTheme::hasWidgets()
-{
-    return qobject_cast<QApplication *>(qApp) != nullptr;
-}
+#endif
 
 #ifdef SUPPORT_KDE
 QIconEngine *

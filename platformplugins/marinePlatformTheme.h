@@ -30,8 +30,9 @@ public:
 
     virtual QIcon fileIcon(const QFileInfo& fileInfo,
         QPlatformTheme::IconOptions iconOptions = {}) const override;
-
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     virtual Qt::ColorScheme colorScheme() const override;
+#endif
 
 #ifdef SUPPORT_KDE
     virtual QIconEngine* createIconEngine(const QString& iconName) const override;
@@ -39,14 +40,17 @@ public:
 
 private slots:
     void createFsWatcher();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     void xdpSettingsChanged(QString xdp_namespace, QString key, QDBusVariant value);
+#endif
 
 private:
     void readSettings();
     void readXdgDesktopPortalVersion();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     void xdpSettingsInit();
-    bool hasWidgets();
     void colorSchemeUpdateCheck(uint scheme);
+#endif
 
 private:
     QPlatformTheme* m_filechoosertheme;
@@ -56,5 +60,7 @@ private:
     QStringList m_stylename;
     QString m_iconTheme;
     std::optional<u_int> m_scrollLen;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     Qt::ColorScheme m_colorScheme;
+#endif
 };
