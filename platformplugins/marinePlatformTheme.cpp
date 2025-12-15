@@ -5,8 +5,6 @@
 
 #include <QGuiApplication>
 #include <QStyleFactory>
-#include <qapplication.h>
-#include <qobject.h>
 #include <qpa/qplatformthemefactory_p.h>
 
 #include <QDBusConnection>
